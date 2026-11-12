@@ -36,6 +36,51 @@ interface Deal {
   modelCode?: string;
 }
 
+function StarRatingInline({ rating }: { rating: number | string }) {
+  return (
+    <div className="flex items-center gap-1">
+      {[1, 2, 3, 4, 5].map((star) => (
+        <svg
+          key={star}
+          className="w-3.5 h-3.5 text-[#f0b400] fill-current"
+          viewBox="0 0 20 20"
+        >
+          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+        </svg>
+      ))}
+      <span className="neu-pill-inset text-[10px] font-black text-[#31344b] px-2 py-0.5 rounded-full ml-1.5">
+        {rating}
+      </span>
+    </div>
+  );
+}
+
+function NeuCheckbox({
+  checked,
+  onChange,
+  accentClass = "bg-[#2d4cc8]",
+  disabled = false,
+}: {
+  checked: boolean;
+  onChange?: () => void;
+  accentClass?: string;
+  disabled?: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      disabled={disabled}
+      onClick={onChange}
+      aria-pressed={checked}
+      className={`neu-inset w-5 h-5 rounded-full flex items-center justify-center shrink-0 transition ${
+        disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+      }`}
+    >
+      {checked && <span className={`w-2.5 h-2.5 rounded-full ${accentClass} shadow-xs`} />}
+    </button>
+  );
+}
+
 function SearchEngine() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -44,11 +89,15 @@ function SearchEngine() {
   const [deals, setDeals] = useState<Deal[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Filter states
-  const [selectedStores, setSelectedStores] = useState<string[]>(["Star Tech", "Ryans Computers", "PCB Store BD"]);
+  const [selectedStores, setSelectedStores] = useState<string[]>([
+    "Star Tech",
+    "Ryans Computers",
+    "PCB Store BD",
+  ]);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [inStockOnly, setInStockOnly] = useState(true);
   const [priceRange, setPriceRange] = useState<[number, number]>([20000, 80000]);
+  const [maxBound, setMaxBound] = useState<number>(200000);
   const [sortBy, setSortBy] = useState<"lowest" | "highest" | "score">("lowest");
   const [viewMode, setViewMode] = useState<"matrix" | "grid">("matrix");
   const [budgetTarget, setBudgetTarget] = useState("35,000");
@@ -66,7 +115,9 @@ function SearchEngine() {
           const prices = results.map((d) => d.lowestPrice || d.price);
           const min = Math.min(...prices);
           const max = Math.max(...prices);
-          setPriceRange([Math.floor(min * 0.9 / 1000) * 1000, Math.ceil(max * 1.1 / 1000) * 1000]);
+          const calculatedMax = Math.ceil((max * 1.1) / 1000) * 1000;
+          setMaxBound(Math.max(calculatedMax, 50000));
+          setPriceRange([Math.floor((min * 0.9) / 1000) * 1000, calculatedMax]);
         }
       } catch (error) {
         console.error("Failed to fetch deals:", error);
@@ -99,13 +150,11 @@ function SearchEngine() {
     }
   };
 
-  // Filtered & Sorted Deals
   const filteredDeals = useMemo(() => {
-    let result = deals.filter((deal) => {
+    const result = deals.filter((deal) => {
       const price = deal.lowestPrice || deal.price;
       if (price < priceRange[0] || price > priceRange[1]) return false;
 
-      // Store filter
       if (selectedStores.length > 0 && selectedStores.length < 3) {
         const matchesStore = selectedStores.some(
           (s) =>
@@ -118,7 +167,6 @@ function SearchEngine() {
         if (!matchesStore && !hasMatchingOffer) return false;
       }
 
-      // Brand filter
       if (selectedBrands.length > 0 && deal.brand) {
         if (!selectedBrands.includes(deal.brand)) return false;
       }
@@ -151,81 +199,88 @@ function SearchEngine() {
     return Math.min(...deals.map((d) => d.lowestPrice || d.price));
   }, [deals]);
 
-  // Separate the featured best deal from the rest
   const bestDeal = filteredDeals.length > 0 ? filteredDeals[0] : null;
   const otherDeals = filteredDeals.length > 1 ? filteredDeals.slice(1) : [];
 
+  const getStoreAccent = (storeName: string) => {
+    if (storeName.toLowerCase().includes("star")) return "text-[#a91e2c]";
+    if (storeName.toLowerCase().includes("ryans")) return "text-[#b45309]";
+    return "text-[#2d4cc8]";
+  };
+
   return (
-    <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-16">
+    <div className="min-h-screen bg-[#e6e7ee] text-[#31344b] pb-16">
       
       {/* 1. Breadcrumb & Catalog Sync Header */}
-      <section className="bg-white border-b border-slate-200 py-4 px-4 md:px-8">
+      <section className="bg-[#e6e7ee] border-b border-[#d1d9e6] py-5 px-4 md:px-8">
         <div className="max-w-[1600px] mx-auto">
           
-          {/* Breadcrumb */}
-          <div className="flex items-center gap-2 text-xs text-slate-500 font-medium mb-3">
-            <Link href="/" className="hover:text-blue-600 transition">Home</Link>
+          <div className="flex items-center gap-2 text-xs text-[#66799e] font-bold mb-3">
+            <Link href="/" className="hover:text-[#2d4cc8] transition">Home</Link>
             <span>/</span>
-            <span className="hover:text-blue-600 cursor-pointer">Components</span>
+            <span className="hover:text-[#2d4cc8] cursor-pointer">Components</span>
             <span>/</span>
-            <span className="hover:text-blue-600 cursor-pointer">{deals[0]?.category || "Hardware"}</span>
+            <span className="hover:text-[#2d4cc8] cursor-pointer">{deals[0]?.category || "Hardware"}</span>
             <span>/</span>
-            <span className="text-slate-900 font-bold">{urlQuery}</span>
+            <span className="text-[#2d4cc8] font-black">{urlQuery}</span>
           </div>
 
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
             <div>
               <div className="flex flex-wrap items-center gap-3">
-                <h1 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight uppercase">
+                <h1 className="text-2xl md:text-3xl font-black text-[#31344b] tracking-tight uppercase">
                   {urlQuery}
                 </h1>
-                <span className="text-xs font-black text-blue-700 bg-blue-50 px-3 py-1 rounded-full border border-blue-200">
-                  {deals.length} LIVE OFFERS FOUND
+                <span className="neu-pill text-xs font-black text-[#2d4cc8] px-3.5 py-1 rounded-full">
+                  {deals.length} LIVE OFFERS
                 </span>
-                <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200 flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span className="neu-pill text-xs font-extrabold text-[#18634b] px-3.5 py-1 rounded-full flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-[#10b981] animate-pulse"></span>
                   3 Stores Syncing
                 </span>
               </div>
-              <p className="text-xs md:text-sm text-slate-500 mt-1">
-                Aggregated desktop PC hardware across Star Tech, Ryans Computers, and PCB Store in Dhaka, Chittagong & delivery nationwide.
+              <p className="text-xs md:text-sm text-[#44476a] mt-1.5 font-medium">
+                Aggregated desktop PC hardware across{" "}
+                <strong className="text-[#a91e2c]">Star Tech</strong>,{" "}
+                <strong className="text-[#b45309]">Ryans Computers</strong>, and{" "}
+                <strong className="text-[#2d4cc8]">PCB Store</strong> in Dhaka & delivery nationwide.
               </p>
             </div>
 
-            <div className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 flex items-center gap-3 text-xs">
-              <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <div className="neu-card-sm rounded-2xl px-4 py-3 flex items-center gap-3 text-xs">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#10b981] animate-pulse"></span>
               <div>
-                <p className="font-bold text-slate-800">CATALOG SYNC ACTIVE</p>
-                <p className="text-[11px] text-slate-500">Updated 14 mins ago • Bangladeshi Taka (৳ BDT)</p>
+                <p className="font-black text-[#18634b]">CATALOG SYNC ACTIVE</p>
+                <p className="text-[11px] text-[#66799e] font-semibold">Updated 14 mins ago • Bangladeshi Taka (৳ BDT)</p>
               </div>
             </div>
           </div>
 
           {/* Active Filter Chips */}
-          <div className="flex flex-wrap items-center gap-2 mt-4 pt-3 border-t border-slate-100 text-xs">
-            <span className="font-extrabold text-slate-400 text-[11px] uppercase tracking-wider mr-1">Active Filters:</span>
+          <div className="flex flex-wrap items-center gap-2.5 mt-5 pt-4 border-t border-[#d1d9e6] text-xs">
+            <span className="font-black text-[#66799e] text-[11px] uppercase tracking-wider mr-1">Active Filters:</span>
             
-            <span className="bg-slate-100 border border-slate-300 text-slate-700 font-semibold px-2.5 py-1 rounded-lg flex items-center gap-1.5">
+            <span className="neu-pill-inset text-[#2d4cc8] font-bold px-3 py-1 rounded-full flex items-center gap-1.5">
               <span>Query: <strong>{urlQuery}</strong></span>
             </span>
 
-            <span className="bg-slate-100 border border-slate-300 text-slate-700 font-semibold px-2.5 py-1 rounded-lg flex items-center gap-1.5">
+            <span className="neu-pill-inset text-[#6d28d9] font-bold px-3 py-1 rounded-full flex items-center gap-1.5">
               <span>Range: <strong>৳{priceRange[0].toLocaleString()} - ৳{priceRange[1].toLocaleString()}</strong></span>
             </span>
 
-            <span className="bg-slate-100 border border-slate-300 text-slate-700 font-semibold px-2.5 py-1 rounded-lg flex items-center gap-1.5">
+            <span className="neu-pill-inset text-[#b45309] font-bold px-3 py-1 rounded-full flex items-center gap-1.5">
               <span>Stores: <strong>{selectedStores.length} Active</strong></span>
             </span>
 
             {inStockOnly && (
-              <span className="bg-emerald-50 border border-emerald-300 text-emerald-800 font-semibold px-2.5 py-1 rounded-lg flex items-center gap-1.5">
+              <span className="neu-pill-inset text-[#18634b] font-bold px-3 py-1 rounded-full flex items-center gap-1.5">
                 <span>● In Stock Only</span>
               </span>
             )}
 
             <button
               onClick={resetFilters}
-              className="text-blue-600 hover:text-blue-700 font-bold ml-2 underline text-xs cursor-pointer"
+              className="neu-btn text-[#a91e2c] font-extrabold ml-1 px-3 py-1 rounded-full text-xs cursor-pointer"
             >
               Clear all filters
             </button>
@@ -234,261 +289,274 @@ function SearchEngine() {
         </div>
       </section>
 
-      {/* 2. Main Workspace: Filters Sidebar + Content Area */}
-      <main className="max-w-[1600px] mx-auto px-4 md:px-8 py-6 flex flex-col lg:flex-row gap-6">
+      {/* 2. Main Workspace: Neumorphic Sidebar + Content Area */}
+      <main className="max-w-[1600px] mx-auto px-4 md:px-8 py-8 flex flex-col lg:flex-row gap-7">
         
         {/* =========================================================================
-            LEFT SIDEBAR: FILTERS & SPECS (Refine Results)
+            LEFT SIDEBAR: NEUMORPHIC FILTERS (Screenshots 4, 5, 6)
            ========================================================================= */}
-        <aside className="w-full lg:w-72 flex-shrink-0 space-y-5">
-          <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs space-y-6">
-            
-            <div className="flex justify-between items-center border-b border-slate-100 pb-3">
-              <h3 className="font-extrabold text-slate-900 text-sm flex items-center gap-2">
-                <span>⚙️</span> Filters & Specs
-              </h3>
-              <button
-                type="button"
-                onClick={resetFilters}
-                className="text-[11px] text-blue-600 font-bold hover:underline cursor-pointer"
-              >
-                Reset
-              </button>
+        <aside className="w-full lg:w-76 flex-shrink-0 space-y-6">
+          
+          {/* Card 1: Price Range Card (EXACTLY Screenshot 4!) */}
+          <div className="neu-card rounded-2xl p-5 space-y-4">
+            <div className="flex justify-between items-center">
+              <h3 className="text-base font-black text-[#31344b]">Price range</h3>
+              <span className="text-xs font-extrabold text-[#2d4cc8]">
+                ৳{(priceRange[0] / 1000).toFixed(0)}k - ৳{(priceRange[1] / 1000).toFixed(0)}k
+              </span>
             </div>
 
-            {/* Hardware Category */}
-            <div>
-              <p className="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider mb-2">Hardware Category</p>
-              <select
-                value={deals[0]?.category || "Graphics Cards"}
-                onChange={(e) => router.push(`/search?q=${encodeURIComponent(e.target.value)}`)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-700 outline-none hover:border-slate-300 cursor-pointer"
-              >
-                <option value="Graphics Cards">🎮 Graphics Cards (GPU)</option>
-                <option value="Processors">🧠 Processors (CPU)</option>
-                <option value="Motherboards">🎛️ Motherboards</option>
-                <option value="RAM">💾 RAM & Memory</option>
-                <option value="SSD">💽 SSDs & Storage</option>
-                <option value="Monitors">🖥️ Gaming Monitors</option>
-              </select>
+            {/* Neumorphic Range Slider */}
+            <div className="py-2">
+              <input
+                type="range"
+                min={0}
+                max={maxBound}
+                step={1000}
+                value={priceRange[1]}
+                onChange={(e) => setPriceRange([priceRange[0], Math.max(priceRange[0], Number(e.target.value))])}
+                className="neu-range w-full"
+              />
             </div>
 
-            {/* Price Range */}
-            <div>
-              <div className="flex justify-between items-center mb-2">
-                <p className="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">Price Range (BDT)</p>
-                <span className="text-[11px] font-bold text-blue-600">
-                  ৳{(priceRange[0] / 1000).toFixed(0)}k - ৳{(priceRange[1] / 1000).toFixed(0)}k
-                </span>
-              </div>
-
-              <div className="flex items-center gap-2 mb-3">
-                <div className="bg-slate-50 border border-slate-200 p-2 rounded-xl text-center w-full">
-                  <span className="text-[9px] text-slate-400 block font-bold">MIN ৳</span>
+            {/* Min & Max Inset Input Wells */}
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-xs font-bold text-[#44476a] block mb-1.5">Min</label>
+                <div className="neu-inset rounded-xl px-3 py-2 flex items-center">
+                  <span className="text-xs font-bold text-[#66799e] mr-1">৳</span>
                   <input
                     type="number"
                     value={priceRange[0]}
                     onChange={(e) => setPriceRange([Number(e.target.value), priceRange[1]])}
-                    className="w-full text-center text-xs font-bold text-slate-800 bg-transparent outline-none"
+                    className="w-full text-xs font-extrabold text-[#31344b] bg-transparent outline-none"
                   />
                 </div>
-                <div className="bg-slate-50 border border-slate-200 p-2 rounded-xl text-center w-full">
-                  <span className="text-[9px] text-slate-400 block font-bold">MAX ৳</span>
+              </div>
+              <div>
+                <label className="text-xs font-bold text-[#44476a] block mb-1.5 text-right">Max</label>
+                <div className="neu-inset rounded-xl px-3 py-2 flex items-center">
+                  <span className="text-xs font-bold text-[#66799e] mr-1">৳</span>
                   <input
                     type="number"
                     value={priceRange[1]}
                     onChange={(e) => setPriceRange([priceRange[0], Number(e.target.value)])}
-                    className="w-full text-center text-xs font-bold text-slate-800 bg-transparent outline-none"
+                    className="w-full text-xs font-extrabold text-[#31344b] bg-transparent outline-none text-right"
                   />
                 </div>
               </div>
+            </div>
 
-              {/* Quick Bracket Buttons */}
-              <div className="grid grid-cols-3 gap-1.5 mb-3">
-                <button
-                  type="button"
-                  onClick={() => setPriceRange([20000, 36000])}
-                  className="bg-slate-100 hover:bg-slate-200 text-slate-700 py-1 rounded text-[10px] font-bold transition cursor-pointer"
-                >
-                  &lt; ৳36k
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setPriceRange([36000, 42000])}
-                  className="bg-slate-100 hover:bg-slate-200 text-slate-700 py-1 rounded text-[10px] font-bold transition cursor-pointer"
-                >
-                  36k - 42k
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setPriceRange([42000, 80000])}
-                  className="bg-slate-100 hover:bg-slate-200 text-slate-700 py-1 rounded text-[10px] font-bold transition cursor-pointer"
-                >
-                  &gt; ৳42k
-                </button>
-              </div>
-
+            {/* Quick Bracket Pills */}
+            <div className="grid grid-cols-3 gap-2">
               <button
                 type="button"
-                onClick={() => {}}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-xl text-xs font-bold transition cursor-pointer shadow-xs"
+                onClick={() => setPriceRange([1000, 36000])}
+                className="neu-btn text-[#2d4cc8] py-1.5 rounded-xl text-[11px] font-extrabold cursor-pointer"
               >
-                Apply Price Bracket
+                &lt; ৳36k
+              </button>
+              <button
+                type="button"
+                onClick={() => setPriceRange([36000, 42000])}
+                className="neu-btn text-[#6d28d9] py-1.5 rounded-xl text-[11px] font-extrabold cursor-pointer"
+              >
+                36k - 42k
+              </button>
+              <button
+                type="button"
+                onClick={() => setPriceRange([42000, maxBound])}
+                className="neu-btn text-[#18634b] py-1.5 rounded-xl text-[11px] font-extrabold cursor-pointer"
+              >
+                &gt; ৳42k
               </button>
             </div>
 
-            {/* Retail Stores */}
-            <div className="border-t border-slate-100 pt-5">
-              <div className="flex justify-between items-center mb-3">
-                <p className="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">Retail Stores</p>
-                <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.2 rounded">3 ONLINE</span>
-              </div>
-              <div className="space-y-2.5 text-xs font-semibold text-slate-700">
+            <button
+              type="button"
+              onClick={() => {}}
+              className="neu-btn w-full text-[#2d4cc8] py-2.5 rounded-xl text-xs font-black cursor-pointer"
+            >
+              Apply
+            </button>
+          </div>
+
+          {/* Card 2: Product Type Double-Bevel Card (EXACTLY Screenshot 6!) */}
+          <div className="neu-inset p-2 rounded-2xl">
+            <div className="neu-card-sm rounded-xl p-4 space-y-3">
+              <h3 className="text-base font-black text-[#31344b]">Product type</h3>
+              <ul className="space-y-2.5 text-xs font-bold text-[#44476a]">
                 {[
-                  { name: "Star Tech", count: deals.filter((d) => d.store.toLowerCase().includes("star") || d.storeOffers?.[0]?.store.includes("Star")).length },
-                  { name: "Ryans Computers", count: deals.filter((d) => d.store.toLowerCase().includes("ryans") || d.storeOffers?.[0]?.store.includes("Ryans")).length },
-                  { name: "PCB Store BD", count: deals.filter((d) => d.store.toLowerCase().includes("pcb") || d.storeOffers?.[0]?.store.includes("PCB")).length }
-                ].map((st) => (
-                  <label key={st.name} className="flex items-center justify-between cursor-pointer group">
-                    <span className="flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        checked={selectedStores.includes(st.name)}
-                        onChange={() => toggleStore(st.name)}
-                        className="accent-blue-600 w-4 h-4 rounded cursor-pointer"
-                      />
-                      <span>{st.name}</span>
+                  { label: "Graphics Cards", q: "Graphics Cards", count: 1420, color: "text-[#2d4cc8]" },
+                  { label: "Processors", q: "Processors", count: 650, color: "text-[#6d28d9]" },
+                  { label: "Motherboards", q: "Motherboards", count: 1350, color: "text-[#18634b]" },
+                  { label: "RAM & Memory", q: "RAM", count: 980, color: "text-[#0891b2]" },
+                  { label: "SSDs & Storage", q: "SSD", count: 1590, color: "text-[#b45309]" },
+                  { label: "Monitors", q: "Monitors", count: 720, color: "text-[#a91e2c]" },
+                ].map((item) => (
+                  <li
+                    key={item.q}
+                    onClick={() => router.push(`/search?q=${encodeURIComponent(item.q)}`)}
+                    className="flex items-center justify-between cursor-pointer group py-0.5"
+                  >
+                    <span className="group-hover:text-[#2d4cc8] transition">{item.label}</span>
+                    <span className={`neu-pill-inset px-2.5 py-0.5 rounded-full text-[11px] font-black ${item.color}`}>
+                      {item.count}
                     </span>
-                    <span className="text-slate-400 group-hover:text-blue-600 text-[11px] font-bold">
-                      {st.count}
-                    </span>
-                  </label>
+                  </li>
                 ))}
-              </div>
+              </ul>
             </div>
+          </div>
 
-            {/* Availability */}
-            <div className="border-t border-slate-100 pt-5">
-              <p className="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider mb-3">Availability</p>
-              <div className="space-y-2 text-xs font-semibold text-slate-700">
-                <label className="flex items-center justify-between cursor-pointer">
-                  <span className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={inStockOnly}
-                      onChange={(e) => setInStockOnly(e.target.checked)}
-                      className="accent-blue-600 w-4 h-4 rounded cursor-pointer"
-                    />
-                    <span>In Stock Only</span>
-                  </span>
-                  <span className="text-emerald-600 text-[11px] font-bold">{filteredDeals.length}</span>
-                </label>
-                <label className="flex items-center justify-between cursor-pointer text-slate-400">
-                  <span className="flex items-center gap-2">
-                    <input type="checkbox" disabled className="w-4 h-4 rounded" />
-                    <span>Pre-Order / Upcoming</span>
-                  </span>
-                  <span className="text-[11px]">0</span>
-                </label>
+          {/* Card 3: Retail Stores & Brand Checkboxes (EXACTLY Screenshot 5!) */}
+          <div className="neu-card rounded-2xl p-5 space-y-5">
+            <div>
+              <div className="flex justify-between items-center mb-3">
+                <h3 className="text-base font-black text-[#31344b]">Retail Stores</h3>
+                <span className="neu-pill-inset text-[10px] font-black text-[#18634b] px-2.5 py-0.5 rounded-full">
+                  3 ONLINE
+                </span>
               </div>
-            </div>
 
-            {/* Brand / Manufacturer */}
-            {availableBrands.length > 0 && (
-              <div className="border-t border-slate-100 pt-5">
-                <p className="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider mb-3">Brand Manufacturer</p>
-                <div className="space-y-2.5 text-xs font-semibold text-slate-700">
-                  {availableBrands.map(([brand, count]) => (
-                    <label key={brand} className="flex items-center justify-between cursor-pointer group">
-                      <span className="flex items-center gap-2">
-                        <input
-                          type="checkbox"
-                          checked={selectedBrands.includes(brand)}
-                          onChange={() => toggleBrand(brand)}
-                          className="accent-blue-600 w-4 h-4 rounded cursor-pointer"
-                        />
-                        <span>{brand}</span>
+              <div className="space-y-3 text-xs font-bold text-[#31344b]">
+                {[
+                  {
+                    name: "Star Tech",
+                    accent: "bg-[#a91e2c]",
+                    textColor: "text-[#a91e2c]",
+                    count: deals.filter((d) => d.store.toLowerCase().includes("star") || d.storeOffers?.[0]?.store.includes("Star")).length
+                  },
+                  {
+                    name: "Ryans Computers",
+                    accent: "bg-[#d97706]",
+                    textColor: "text-[#b45309]",
+                    count: deals.filter((d) => d.store.toLowerCase().includes("ryans") || d.storeOffers?.[0]?.store.includes("Ryans")).length
+                  },
+                  {
+                    name: "PCB Store BD",
+                    accent: "bg-[#2d4cc8]",
+                    textColor: "text-[#2d4cc8]",
+                    count: deals.filter((d) => d.store.toLowerCase().includes("pcb") || d.storeOffers?.[0]?.store.includes("PCB")).length
+                  }
+                ].map((st) => {
+                  const isChecked = selectedStores.includes(st.name);
+                  return (
+                    <div
+                      key={st.name}
+                      onClick={() => toggleStore(st.name)}
+                      className="flex items-center justify-between cursor-pointer group"
+                    >
+                      <span className="flex items-center gap-2.5">
+                        <NeuCheckbox checked={isChecked} accentClass={st.accent} />
+                        <span className={`${isChecked ? st.textColor : "text-[#44476a]"} font-extrabold`}>
+                          {st.name}
+                        </span>
                       </span>
-                      <span className="text-slate-400 group-hover:text-blue-600 text-[11px] font-bold">{count}</span>
-                    </label>
-                  ))}
+                      <span className="neu-pill-inset px-2 py-0.5 rounded-full text-[11px] font-black text-[#44476a]">
+                        {st.count}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {availableBrands.length > 0 && (
+              <div className="border-t border-[#d1d9e6] pt-4">
+                <h4 className="text-sm font-black text-[#31344b] mb-3">Brand Manufacturer</h4>
+                <div className="grid grid-cols-2 gap-2.5 text-xs font-bold text-[#44476a]">
+                  {availableBrands.map(([brand, count]) => {
+                    const isChecked = selectedBrands.includes(brand);
+                    return (
+                      <div
+                        key={brand}
+                        onClick={() => toggleBrand(brand)}
+                        className="flex items-center gap-2 cursor-pointer group"
+                      >
+                        <NeuCheckbox checked={isChecked} accentClass="bg-[#6d28d9]" />
+                        <span className={`truncate ${isChecked ? "text-[#6d28d9]" : "group-hover:text-[#2d4cc8]"}`}>
+                          {brand} ({count})
+                        </span>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             )}
 
-            {/* VRAM / Spec Filter Pills */}
-            <div className="border-t border-slate-100 pt-5">
-              <p className="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider mb-3">VRAM Capacity</p>
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  className="flex-1 bg-blue-600 text-white text-xs font-bold py-1.5 rounded-lg text-center"
-                >
-                  8GB ({filteredDeals.length})
-                </button>
-                <button
-                  type="button"
-                  className="flex-1 bg-slate-100 text-slate-600 text-xs font-bold py-1.5 rounded-lg text-center hover:bg-slate-200"
-                >
-                  16GB Ti (0)
-                </button>
+            <div className="border-t border-[#d1d9e6] pt-4 space-y-2.5 text-xs font-bold text-[#44476a]">
+              <div
+                onClick={() => setInStockOnly(!inStockOnly)}
+                className="flex items-center justify-between cursor-pointer"
+              >
+                <span className="flex items-center gap-2.5">
+                  <NeuCheckbox checked={inStockOnly} accentClass="bg-[#059669]" />
+                  <span>In Stock Only</span>
+                </span>
+                <span className="text-[#18634b] font-black">{filteredDeals.length}</span>
+              </div>
+              <div className="flex items-center justify-between text-[#66799e]">
+                <span className="flex items-center gap-2.5">
+                  <NeuCheckbox checked={false} disabled />
+                  <span>4★ & above</span>
+                </span>
+                <span className="text-[#f0b400] font-bold">★★★★☆</span>
               </div>
             </div>
 
-            {/* Customer Satisfaction */}
-            <div className="border-t border-slate-100 pt-5">
-              <p className="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider mb-2">Customer Satisfaction</p>
-              <label className="flex items-center gap-2 text-xs font-semibold text-slate-700 cursor-pointer">
-                <input type="checkbox" defaultChecked className="accent-blue-600 w-4 h-4 rounded" />
-                <span className="text-amber-500 font-bold">★★★★☆</span>
-                <span>4★ & above</span>
-              </label>
-            </div>
-
+            <button
+              type="button"
+              onClick={resetFilters}
+              className="neu-btn text-[#a91e2c] font-extrabold text-xs px-4 py-2 rounded-xl cursor-pointer"
+            >
+              Reset
+            </button>
           </div>
 
-          {/* Market Price Drop Summary Card */}
-          <div className="bg-linear-to-br from-blue-50 to-indigo-50 border border-blue-200/80 rounded-2xl p-5 shadow-xs">
-            <div className="flex items-center gap-2 text-blue-700 font-bold text-xs uppercase tracking-wider mb-2">
+          {/* Card 4: Market Summary Card */}
+          <div className="neu-card rounded-2xl p-5">
+            <div className="flex items-center gap-2 text-[#2d4cc8] font-black text-xs uppercase tracking-wider mb-2">
               <span>📈</span> Market Summary
             </div>
-            <p className="text-xs text-slate-600 leading-relaxed mb-3">
-              Average Dhaka street price is <strong className="text-slate-900">৳38,100</strong>. Pricing has dipped by 4.2% following fresh regional distributor shipments this week.
+            <p className="text-xs text-[#44476a] leading-relaxed mb-3 font-medium">
+              Average Dhaka street price is <strong className="text-[#31344b]">৳38,100</strong>. Pricing dipped by{" "}
+              <strong className="text-[#18634b]">4.2%</strong> following fresh shipments this week.
             </p>
-            <div className="flex justify-between items-center text-xs border-t border-blue-200/60 pt-3">
-              <span className="text-slate-500 font-medium">Lowest Recorded:</span>
-              <span className="font-extrabold text-emerald-700 bg-white px-2 py-0.5 rounded border border-emerald-300">
-                ৳{lowestRecordedPrice.toLocaleString()} (Star Tech)
+            <div className="flex justify-between items-center text-xs border-t border-[#d1d9e6] pt-3">
+              <span className="text-[#66799e] font-bold">Lowest Recorded:</span>
+              <span className="neu-pill text-xs font-black text-[#18634b] px-3 py-1 rounded-full">
+                ৳{lowestRecordedPrice.toLocaleString()}
               </span>
             </div>
           </div>
         </aside>
 
         {/* =========================================================================
-            RIGHT MAIN AREA: SORTING + CARDS + MATRICES
+            RIGHT MAIN AREA: SORTING + HORIZONTAL & GRID NEUMORPHIC CARDS
            ========================================================================= */}
-        <div className="flex-1 space-y-5">
+        <div className="flex-1 space-y-6">
           
-          {/* Top Sort & Results Bar */}
-          <div className="bg-white border border-slate-200 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between shadow-xs gap-3">
+          {/* Top Sort & View Toggle Bar */}
+          <div className="neu-card rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <p className="text-xs font-bold text-slate-700">
-                Showing <strong className="text-slate-900">{filteredDeals.length}</strong> of {deals.length} variants
+              <p className="text-xs font-bold text-[#44476a]">
+                Showing <strong className="text-[#2d4cc8] font-black">{filteredDeals.length}</strong> of {deals.length} variants
               </p>
-              <span className="text-slate-300">•</span>
-              <span className="text-[11px] font-extrabold text-emerald-600 flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span className="text-[#b8b9be]">•</span>
+              <span className="text-[11px] font-black text-[#18634b] flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-[#10b981] animate-pulse"></span>
                 LIVE PRICE GUARANTEED
               </span>
             </div>
 
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2 text-xs">
-                <span className="text-slate-500 font-medium">Sort:</span>
+                <span className="text-[#66799e] font-bold">Sort:</span>
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value as "lowest" | "highest" | "score")}
-                  className="bg-slate-50 border border-slate-200 text-slate-900 text-xs px-3 py-1.5 rounded-lg font-bold outline-none cursor-pointer hover:border-slate-300"
+                  className="neu-inset text-[#31344b] text-xs px-3 py-2 rounded-xl font-extrabold outline-none cursor-pointer"
                 >
                   <option value="lowest">Lowest Price First (Default)</option>
                   <option value="highest">Highest Price First</option>
@@ -496,12 +564,12 @@ function SearchEngine() {
                 </select>
               </div>
 
-              <div className="hidden sm:flex border border-slate-200 rounded-lg overflow-hidden text-xs">
+              <div className="neu-inset hidden sm:flex p-1 rounded-xl text-xs gap-1">
                 <button
                   type="button"
                   onClick={() => setViewMode("matrix")}
-                  className={`px-2.5 py-1.5 font-bold transition ${
-                    viewMode === "matrix" ? "bg-blue-600 text-white" : "bg-white text-slate-600 hover:bg-slate-50"
+                  className={`px-3 py-1.5 rounded-lg font-extrabold transition cursor-pointer ${
+                    viewMode === "matrix" ? "neu-btn-primary" : "text-[#44476a] hover:text-[#2d4cc8]"
                   }`}
                 >
                   Matrix View
@@ -509,8 +577,8 @@ function SearchEngine() {
                 <button
                   type="button"
                   onClick={() => setViewMode("grid")}
-                  className={`px-2.5 py-1.5 font-bold transition ${
-                    viewMode === "grid" ? "bg-blue-600 text-white" : "bg-white text-slate-600 hover:bg-slate-50"
+                  className={`px-3 py-1.5 rounded-lg font-extrabold transition cursor-pointer ${
+                    viewMode === "grid" ? "neu-btn-primary" : "text-[#44476a] hover:text-[#2d4cc8]"
                   }`}
                 >
                   Grid View
@@ -519,43 +587,44 @@ function SearchEngine() {
             </div>
           </div>
 
-          {/* SPONSORED / FEATURED PARTNER OFFER CARD */}
-          <div className="bg-linear-to-r from-amber-50/70 via-white to-amber-50/30 border-2 border-amber-300/80 rounded-2xl p-4 md:p-5 shadow-xs relative overflow-hidden">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+          {/* SPONSORED PARTNER PROMOTION CARD */}
+          <div className="neu-card rounded-2xl p-5 border-l-4 border-l-[#d97706]">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-5">
               <div className="flex items-center gap-4 w-full md:w-auto">
-                <div className="w-20 h-20 bg-white rounded-xl border border-amber-200 p-2 flex items-center justify-center flex-shrink-0">
+                <div className="neu-inset w-20 h-20 rounded-xl p-2 flex items-center justify-center flex-shrink-0">
                   <img
-                    src="https://www.startech.com.bd/image/cache/catalog/graphics-card/zotac/gaming-geforce-rtx-4060-8gb-twin-edge-oc-white-edition/gaming-geforce-rtx-4060-8gb-twin-edge-oc-white-edition-01-500x500.webp"
+                    src="/categories/gpu.jpg"
                     alt="Zotac Twin Edge"
-                    className="max-h-16 object-contain"
+                    className="max-h-16 object-contain mix-blend-multiply"
                   />
                 </div>
                 <div>
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="bg-amber-400 text-slate-950 text-[9px] font-black px-2 py-0.5 rounded uppercase tracking-wider">
+                    <span className="bg-[#f59e0b] text-white text-[9px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">
                       SPONSORED
                     </span>
-                    <span className="text-[11px] text-slate-500 font-semibold">Star Tech Official Partner Promotion</span>
+                    <span className="text-[11px] text-[#a91e2c] font-extrabold">Star Tech Official Partner Promotion</span>
                   </div>
-                  <h4 className="text-sm md:text-base font-extrabold text-slate-900 leading-snug">
+                  <h4 className="text-sm md:text-base font-black text-[#31344b] leading-snug">
                     ZOTAC Gaming GeForce RTX 4060 8GB Twin Edge OC White Edition
                   </h4>
-                  <p className="text-xs text-emerald-700 font-semibold mt-1">
-                    Free Express Delivery in Dhaka with voucher code <strong className="font-mono bg-emerald-100 px-1 py-0.2 rounded text-emerald-900">BDTECH</strong>
+                  <p className="text-xs text-[#18634b] font-bold mt-1">
+                    Free Express Delivery in Dhaka with voucher code{" "}
+                    <strong className="neu-pill-inset font-mono px-2 py-0.5 rounded text-[#31344b]">BDTECH</strong>
                   </p>
                 </div>
               </div>
 
-              <div className="flex md:flex-col items-center md:items-end justify-between w-full md:w-auto border-t md:border-t-0 border-amber-200/60 pt-3 md:pt-0 gap-2">
+              <div className="flex md:flex-col items-center md:items-end justify-between w-full md:w-auto border-t md:border-t-0 border-[#d1d9e6] pt-3 md:pt-0 gap-2">
                 <div className="text-left md:text-right">
-                  <span className="text-xl md:text-2xl font-black text-slate-900">৳37,200</span>
-                  <span className="block text-[10px] text-emerald-600 font-bold">In Stock at Star Tech</span>
+                  <span className="text-2xl font-black text-[#a91e2c]">৳37,200</span>
+                  <span className="block text-[10px] text-[#18634b] font-extrabold">In Stock at Star Tech</span>
                 </div>
                 <a
                   href="https://www.startech.com.bd"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-5 py-2.5 rounded-xl transition shadow-xs whitespace-nowrap cursor-pointer"
+                  className="neu-btn-primary text-xs font-extrabold px-5 py-2.5 rounded-xl whitespace-nowrap cursor-pointer"
                 >
                   Direct Star Tech Deal ↗
                 </a>
@@ -565,24 +634,24 @@ function SearchEngine() {
 
           {/* LOADING STATE */}
           {loading && (
-            <div className="bg-white border border-slate-200 rounded-2xl p-16 text-center text-slate-500 shadow-xs">
-              <div className="animate-spin w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-4"></div>
-              <p className="text-sm font-bold text-slate-700">Aggregating live price matrices across verified BD stores...</p>
-              <p className="text-xs text-slate-400 mt-1">Cross-referencing Star Tech, Ryans Computers, and PCB Store catalog indexes</p>
+            <div className="neu-card rounded-2xl p-16 text-center text-[#44476a]">
+              <div className="animate-spin w-10 h-10 border-4 border-[#2d4cc8] border-t-transparent rounded-full mx-auto mb-4"></div>
+              <p className="text-sm font-extrabold text-[#31344b]">Aggregating live price matrices across verified BD stores...</p>
+              <p className="text-xs text-[#66799e] mt-1 font-medium">Cross-referencing Star Tech, Ryans Computers, and PCB Store catalog indexes</p>
             </div>
           )}
 
           {/* EMPTY STATE */}
           {!loading && filteredDeals.length === 0 && (
-            <div className="bg-white border border-slate-200 rounded-2xl p-16 text-center text-slate-600 shadow-xs">
+            <div className="neu-card rounded-2xl p-16 text-center text-[#44476a]">
               <div className="text-4xl mb-3">🔍</div>
-              <h3 className="text-lg font-bold text-slate-900">No hardware found matching &ldquo;{urlQuery}&rdquo;</h3>
-              <p className="text-xs text-slate-500 mt-1 max-w-md mx-auto mb-6">
+              <h3 className="text-lg font-black text-[#31344b]">No hardware found matching &ldquo;{urlQuery}&rdquo;</h3>
+              <p className="text-xs text-[#66799e] mt-1 max-w-md mx-auto mb-6 font-medium">
                 Try loosening your price range or check your spelling. You can also reset filters to inspect all hardware listings.
               </p>
               <button
                 onClick={resetFilters}
-                className="bg-blue-600 text-white font-bold text-xs px-6 py-2.5 rounded-xl hover:bg-blue-700 transition"
+                className="neu-btn-primary font-extrabold text-xs px-6 py-2.5 rounded-xl cursor-pointer"
               >
                 Reset All Filters
               </button>
@@ -590,112 +659,132 @@ function SearchEngine() {
           )}
 
           {/* =====================================================================
-              FEATURED BEST DEAL HIGHLIGHT CARD (SmartPrice Best Deal Ribbon)
+              FEATURED BEST DEAL HIGHLIGHT CARD (Screenshot 3 Horizontal Pattern)
              ===================================================================== */}
           {!loading && bestDeal && (
-            <div className="bg-white border-2 border-emerald-400 rounded-2xl overflow-hidden shadow-md shadow-emerald-50 transition-all">
+            <div className="neu-card rounded-2xl overflow-hidden">
               
-              {/* Ribbon Header */}
-              <div className="bg-linear-to-r from-emerald-500 to-teal-600 text-white px-5 py-2.5 flex flex-wrap items-center justify-between text-xs font-bold gap-2">
+              {/* Vibrant Ribbon Header */}
+              <div className="bg-gradient-to-r from-[#059669] via-[#0d9488] to-[#2d4cc8] text-white px-5 py-2.5 flex flex-wrap items-center justify-between text-xs font-bold gap-2">
                 <div className="flex items-center gap-2">
                   <span className="text-sm">⭐</span>
                   <span className="uppercase tracking-wide font-black">
                     SmartPrice Best Deal — Score {((bestDeal.recommendationScore || 0.96) * 100).toFixed(0)}/100
                   </span>
-                  <span className="bg-white/20 text-white text-[10px] px-2 py-0.5 rounded-full font-semibold">
+                  <span className="bg-white/20 text-white text-[10px] px-2.5 py-0.5 rounded-full font-bold">
                     Maximum Value Index
                   </span>
                 </div>
-                <div className="text-[11px] text-emerald-100 font-medium hidden md:inline">
+                <div className="text-[11px] text-white/90 font-semibold hidden md:inline">
                   ⚖️ Weighted: 60% price spread + 40% stock veracity
                 </div>
               </div>
 
-              {/* Main Product Info Block */}
-              <div className="p-6 border-b border-slate-100 flex flex-col md:flex-row gap-6">
+              {/* Screenshot 3: 3-Column Horizontal Featured Product Block */}
+              <div className="p-6 border-b border-[#d1d9e6] grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
                 
-                {/* Image */}
-                <div className="w-full md:w-56 flex-shrink-0 flex flex-col items-center justify-center bg-slate-50 rounded-xl p-3 border border-slate-100">
+                {/* Left Image (col-md-3) */}
+                <div className="md:col-span-3 flex flex-col items-center justify-center p-3">
                   <img
                     src={bestDeal.imageUrl}
                     alt={bestDeal.name}
-                    className="max-h-32 object-contain mix-blend-multiply"
+                    className="max-h-36 object-contain mix-blend-multiply"
                   />
-                  <span className="text-[10px] font-bold text-slate-400 mt-2">WindForce 2X Cooling</span>
+                  <span className="text-[10px] font-bold text-[#66799e] mt-2">{bestDeal.brand || "Official BD Warranty"}</span>
                 </div>
 
-                {/* Details */}
-                <div className="flex-1 flex flex-col justify-between">
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="text-[10px] font-black text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200 uppercase tracking-wider">
-                        FEATURED BEST VALUE
-                      </span>
-                      <span className="text-[11px] text-slate-400 font-mono font-semibold">
-                        {bestDeal.modelCode || "Model: GV-N4060WF2OC-8GD"}
-                      </span>
-                    </div>
-
-                    <h2 className="text-xl font-black text-slate-900 leading-tight hover:text-blue-600 transition cursor-pointer">
-                      {bestDeal.name}
-                    </h2>
-
-                    {/* Specs Pills */}
-                    <div className="flex flex-wrap gap-1.5 mt-3">
-                      {(bestDeal.specs || [
-                        "8GB GDDR6 (128-bit)",
-                        "Boost Clock: 2475 MHz",
-                        "2x DisplayPort 1.4a, 2x HDMI 2.1a",
-                        "PCIe 4.0 x8"
-                      ]).map((spec, sIdx) => (
-                        <span
-                          key={sIdx}
-                          className="bg-slate-100 text-slate-700 text-[10px] font-bold px-2.5 py-1 rounded-md border border-slate-200"
-                        >
-                          {spec}
-                        </span>
-                      ))}
-                    </div>
+                {/* Center Details (col-md-6) */}
+                <div className="md:col-span-6 space-y-3">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="neu-pill text-[10px] font-black text-[#2d4cc8] px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                      FEATURED BEST VALUE
+                    </span>
+                    <span className="text-[11px] text-[#66799e] font-mono font-bold">
+                      {bestDeal.modelCode || bestDeal.category}
+                    </span>
                   </div>
 
-                  {/* Pricing Overview */}
-                  <div className="flex flex-col sm:flex-row sm:items-end justify-between mt-4 pt-4 border-t border-slate-100 gap-3">
-                    <div>
-                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Lowest Street Price</p>
-                      <div className="flex items-baseline gap-2">
-                        <span className="text-3xl font-black text-emerald-600 tracking-tight">
-                          ৳{(bestDeal.lowestPrice || bestDeal.price).toLocaleString()}
-                        </span>
-                        <span className="text-xs text-slate-500 font-semibold">
-                          at {bestDeal.storeOffers?.[0]?.store || bestDeal.store}
-                        </span>
-                      </div>
-                    </div>
+                  <h2 className="text-xl font-black text-[#31344b] leading-tight hover:text-[#2d4cc8] transition cursor-pointer">
+                    {bestDeal.name}
+                  </h2>
 
-                    <div className="text-left sm:text-right">
-                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Spread Across 3 Stores</p>
-                      <p className="text-xs font-bold text-slate-800">
-                        ৳{(bestDeal.lowestPrice || bestDeal.price).toLocaleString()} – ৳{((bestDeal.highestPrice || (bestDeal.price + 2100))).toLocaleString()}{" "}
-                        <span className="text-emerald-600 font-black">
-                          (Save up to ৳{((bestDeal.spread || 2100)).toLocaleString()})
-                        </span>
-                      </p>
+                  {/* 5 Golden Stars + Score Pill + Green Orders/Stock (EXACTLY Screenshot 3!) */}
+                  <div className="flex flex-wrap items-center gap-3">
+                    <StarRatingInline rating={(bestDeal.rating || 4.8).toFixed(1)} />
+                    <span className="text-xs font-extrabold text-[#18634b] flex items-center gap-1">
+                      <span>🛒</span> 150+ tracked orders
+                    </span>
+                  </div>
+
+                  {/* Specs Pills */}
+                  <div className="flex flex-wrap gap-1.5 pt-1">
+                    {(bestDeal.specs || [
+                      "8GB GDDR6 (128-bit)",
+                      "Boost Clock: 2475 MHz",
+                      "PCIe 4.0 x8"
+                    ]).map((spec, sIdx) => (
+                      <span
+                        key={sIdx}
+                        className="neu-pill-inset text-[#44476a] text-[10px] font-bold px-2.5 py-1 rounded-full"
+                      >
+                        {spec}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Right Price & Stacked Neumorphic Buttons (col-md-3, Screenshot 3!) */}
+                <div className="md:col-span-3 md:border-l border-[#d1d9e6] md:pl-5 space-y-3">
+                  <div>
+                    <div className="flex items-baseline gap-2 flex-wrap">
+                      <span className="text-sm text-[#66799e] line-through font-bold">
+                        ৳{((bestDeal.highestPrice || bestDeal.price + 2100)).toLocaleString()}
+                      </span>
+                      <span className="text-2xl font-black text-[#a91e2c]">
+                        ৳{(bestDeal.lowestPrice || bestDeal.price).toLocaleString()}
+                      </span>
                     </div>
+                    <span className="text-xs font-extrabold text-[#18634b] flex items-center gap-1 mt-1">
+                      <span>🚚</span> Free / Express shipping
+                    </span>
+                    <span className="text-[11px] font-bold text-[#66799e] block mt-0.5">
+                      Save up to ৳{((bestDeal.spread || 2100)).toLocaleString()} across 3 stores
+                    </span>
+                  </div>
+
+                  <div className="space-y-2.5 pt-1">
+                    <a
+                      href={bestDeal.productUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="neu-btn-primary w-full py-2.5 px-4 rounded-xl text-xs font-extrabold flex items-center justify-center gap-1.5"
+                    >
+                      <span>Details & Buy</span>
+                      <span>↗</span>
+                    </a>
+                    <button
+                      type="button"
+                      onClick={() => alert(`Saved ${bestDeal.name} to wishlist!`)}
+                      className="neu-btn w-full py-2 px-4 rounded-xl text-xs font-extrabold text-[#a91e2c] flex items-center justify-center gap-1.5 cursor-pointer"
+                    >
+                      <span>♥</span>
+                      <span>Wishlist</span>
+                    </button>
                   </div>
                 </div>
 
               </div>
 
               {/* STORE OFFER MATRIX (3 Verified Sources) */}
-              <div className="p-6 bg-slate-50/70 border-b border-slate-100">
+              <div className="p-5 bg-[#e6e7ee] border-b border-[#d1d9e6]">
                 <div className="flex justify-between items-center mb-3">
-                  <p className="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider">
+                  <p className="text-[11px] font-black text-[#44476a] uppercase tracking-wider">
                     Live Merchant Quotes (3 Verified Sources)
                   </p>
-                  <span className="text-[11px] text-slate-400 font-medium">🕒 Auto-refreshed 18m ago</span>
+                  <span className="text-[11px] text-[#66799e] font-bold">🕒 Auto-refreshed 18m ago</span>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {(bestDeal.storeOffers || [
                     { store: "PCB Store BD", price: 36900, isLowest: true, stockText: "In Stock (Elephant Road)", productUrl: bestDeal.productUrl, syncedAgo: "18m ago" },
                     { store: "Star Tech", price: 38200, isLowest: false, priceDiff: 1300, stockText: "In Stock (Branches)", productUrl: bestDeal.productUrl, syncedAgo: "18m ago" },
@@ -703,43 +792,41 @@ function SearchEngine() {
                   ]).map((offer, oIdx) => (
                     <div
                       key={oIdx}
-                      className={`rounded-xl p-3.5 border transition ${
-                        offer.isLowest
-                          ? "bg-emerald-50/80 border-emerald-300 shadow-2xs"
-                          : "bg-white border-slate-200"
+                      className={`rounded-2xl p-4 transition ${
+                        offer.isLowest ? "neu-card border-l-4 border-l-[#10b981]" : "neu-card-sm"
                       }`}
                     >
                       <div className="flex justify-between items-start mb-2">
                         <div>
-                          <span className="font-extrabold text-slate-900 text-xs block">{offer.store}</span>
-                          <span className="text-[10px] text-emerald-700 font-semibold flex items-center gap-1">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                          <span className={`font-black text-xs block ${getStoreAccent(offer.store)}`}>
+                            {offer.store}
+                          </span>
+                          <span className="text-[10px] text-[#18634b] font-bold flex items-center gap-1 mt-0.5">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#10b981]"></span>
                             {offer.stockText}
                           </span>
                         </div>
                         {offer.isLowest ? (
-                          <span className="bg-emerald-600 text-white text-[9px] font-black px-2 py-0.5 rounded uppercase">
+                          <span className="bg-[#059669] text-white text-[9px] font-black px-2 py-0.5 rounded-full uppercase">
                             Lowest
                           </span>
                         ) : (
-                          <span className="text-[10px] font-bold text-slate-500">
+                          <span className="neu-pill-inset text-[10px] font-extrabold text-[#a91e2c] px-2 py-0.5 rounded-full">
                             +{offer.priceDiff ? `৳${offer.priceDiff.toLocaleString()}` : "৳1,200"}
                           </span>
                         )}
                       </div>
 
-                      <div className="flex justify-between items-center mt-3 pt-2 border-t border-slate-100">
-                        <span className="text-sm font-black text-slate-900">
+                      <div className="flex justify-between items-center mt-3 pt-2.5 border-t border-[#d1d9e6]">
+                        <span className={`text-base font-black ${offer.isLowest ? "text-[#18634b]" : "text-[#31344b]"}`}>
                           ৳{offer.price.toLocaleString()}
                         </span>
                         <a
                           href={offer.productUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className={`text-xs font-bold px-3 py-1.5 rounded-lg transition inline-flex items-center gap-1 ${
-                            offer.isLowest
-                              ? "bg-blue-600 hover:bg-blue-700 text-white shadow-xs"
-                              : "bg-slate-100 hover:bg-slate-200 text-slate-800"
+                          className={`text-xs font-extrabold px-3.5 py-1.5 rounded-xl transition inline-flex items-center gap-1 ${
+                            offer.isLowest ? "neu-btn-emerald" : "neu-btn text-[#2d4cc8]"
                           }`}
                         >
                           <span>Visit Store</span>
@@ -752,30 +839,24 @@ function SearchEngine() {
               </div>
 
               {/* Bottom Quick Tools */}
-              <div className="p-4 bg-white flex flex-wrap items-center justify-between gap-3 text-xs">
-                <div className="flex flex-wrap items-center gap-3">
+              <div className="p-4 flex flex-wrap items-center justify-between gap-3 text-xs">
+                <div className="flex flex-wrap items-center gap-2.5">
                   <button
                     onClick={() => alert(`Price alert set for ${bestDeal.name}!`)}
-                    className="text-slate-600 hover:text-blue-600 font-bold flex items-center gap-1.5 py-1 px-2 rounded-lg hover:bg-slate-50 transition cursor-pointer"
+                    className="neu-btn text-[#2d4cc8] font-extrabold flex items-center gap-1.5 py-1.5 px-3 rounded-xl cursor-pointer"
                   >
-                    <span>🔔</span> Set Price Alert (৳)
+                    <span>🔔</span> Set Price Alert
                   </button>
                   <button
-                    onClick={() => alert(`Added ${bestDeal.name} to PC Builder Matrix!`)}
-                    className="text-slate-600 hover:text-blue-600 font-bold flex items-center gap-1.5 py-1 px-2 rounded-lg hover:bg-slate-50 transition cursor-pointer"
+                    onClick={() => router.push("/pc-builder")}
+                    className="neu-btn text-[#6d28d9] font-extrabold flex items-center gap-1.5 py-1.5 px-3 rounded-xl cursor-pointer"
                   >
-                    <span>🛠️</span> Add to PC Builder
-                  </button>
-                  <button
-                    onClick={() => alert(`Saved deal to wishlist!`)}
-                    className="text-slate-600 hover:text-blue-600 font-bold flex items-center gap-1.5 py-1 px-2 rounded-lg hover:bg-slate-50 transition cursor-pointer"
-                  >
-                    <span>💾</span> Save Deal
+                    <span>🛠️</span> Add to AI PC Builder
                   </button>
                 </div>
 
-                <div className="text-[11px] text-slate-400 font-medium">
-                  PCIe 4.0 x8 • 115W TDP • 3 Years Brand Warranty
+                <div className="text-[11px] text-[#66799e] font-bold">
+                  Official BD Distributor Warranty • Verified Stock
                 </div>
               </div>
 
@@ -783,148 +864,228 @@ function SearchEngine() {
           )}
 
           {/* =====================================================================
-              REMAINING PRODUCT CARDS (Offer Matrix Cards)
+              REMAINING PRODUCT CARDS (Supports BOTH Matrix Horizontal & Grid View!)
              ===================================================================== */}
-          {!loading && otherDeals.map((deal, idx) => (
-            <div
-              key={deal._id || idx}
-              className="bg-white border border-slate-200 rounded-2xl overflow-hidden hover:shadow-md transition-all"
-            >
-              {/* Product Header Row */}
-              <div className="p-5 flex flex-col md:flex-row gap-5 border-b border-slate-100">
-                
-                {/* Thumbnail */}
-                <div className="w-full md:w-44 flex-shrink-0 flex items-center justify-center bg-slate-50 rounded-xl p-3 border border-slate-100">
-                  <img
-                    src={deal.imageUrl}
-                    alt={deal.name}
-                    className="max-h-24 object-contain mix-blend-multiply"
-                  />
-                </div>
-
-                {/* Info */}
-                <div className="flex-1 flex flex-col justify-between">
+          {!loading && viewMode === "grid" ? (
+            /* GRID VIEW (Screenshot 2 vertical card design!) */
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+              {otherDeals.map((deal, idx) => (
+                <div
+                  key={deal._id || idx}
+                  className="neu-card-hover rounded-2xl overflow-hidden flex flex-col justify-between"
+                >
                   <div>
-                    <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-                      <span className="text-[10px] font-black text-slate-700 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
-                        {deal.badge || (idx === 0 ? "Lowest Entry Price" : idx === 1 ? "Popular Choice" : "In Stock")}
-                      </span>
-                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                        {deal.modelCode || deal.category}
+                    <div className="p-5 h-44 flex items-center justify-center bg-[#e6e7ee]">
+                      <img
+                        src={deal.imageUrl}
+                        alt={deal.name}
+                        className="max-h-36 object-contain mix-blend-multiply"
+                      />
+                    </div>
+                    <div className="border-t border-[#d1d9e6] p-5 space-y-2">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="neu-pill-inset text-[10px] font-black text-[#2d4cc8] px-2.5 py-0.5 rounded-full">
+                          {deal.badge || deal.category}
+                        </span>
+                        <span className={`text-[11px] font-extrabold ${getStoreAccent(deal.storeOffers?.[0]?.store || deal.store)}`}>
+                          {deal.storeOffers?.[0]?.store || deal.store}
+                        </span>
+                      </div>
+
+                      <h3 className="text-sm font-extrabold text-[#31344b] leading-snug hover:text-[#2d4cc8] transition line-clamp-2">
+                        {deal.name}
+                      </h3>
+
+                      <p className="text-[11px] text-[#44476a] font-medium line-clamp-1">
+                        {deal.specs?.join(" • ") || "Official BD Warranty • 3 Stores Synced"}
+                      </p>
+
+                      <StarRatingInline rating={(deal.rating || 4.8).toFixed(1)} />
+                    </div>
+                  </div>
+
+                  <div className="border-t border-[#d1d9e6] p-4 flex items-center justify-between gap-2">
+                    <div>
+                      {deal.highestPrice && deal.highestPrice > (deal.lowestPrice || deal.price) && (
+                        <span className="text-[11px] text-[#66799e] line-through block font-bold">
+                          ৳{deal.highestPrice.toLocaleString()}
+                        </span>
+                      )}
+                      <span className="text-lg font-black text-[#a91e2c]">
+                        ৳{(deal.lowestPrice || deal.price).toLocaleString()}
                       </span>
                     </div>
 
-                    <h3 className="text-base font-bold text-slate-900 leading-snug hover:text-blue-600 transition cursor-pointer">
-                      {deal.name}
-                    </h3>
-
-                    <p className="text-xs text-slate-500 mt-1 line-clamp-1">
-                      {deal.specs?.join(" • ") || "Official BD Warranty • 3 Stores Stock Synchronized"}
-                    </p>
-                  </div>
-
-                  <div className="flex items-center gap-4 text-[11px] font-medium text-slate-500 mt-3 pt-2 border-t border-slate-100">
-                    <span className="text-emerald-600 font-semibold flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> In Stock
-                    </span>
-                    <span>Verified 18m ago</span>
-                    <span>★ {deal.rating || 4.8} rating</span>
-                  </div>
-                </div>
-
-                {/* Right Price Block */}
-                <div className="w-full md:w-52 flex flex-col justify-between items-start md:items-end border-t md:border-t-0 md:border-l border-slate-100 pt-3 md:pt-0 md:pl-5">
-                  <div className="text-left md:text-right">
-                    <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">
-                      Best Live Price
-                    </span>
-                    <span className="text-2xl font-black text-blue-600 tracking-tight">
-                      ৳{(deal.lowestPrice || deal.price).toLocaleString()}
-                    </span>
-                    <span className="block text-[10px] text-slate-500 mt-0.5 font-medium">
-                      at <strong className="text-slate-700">{deal.storeOffers?.[0]?.store || deal.store}</strong>
-                    </span>
-                  </div>
-
-                  <div className="flex gap-2 w-full md:w-auto mt-3">
                     <a
                       href={deal.productUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition text-center shadow-xs"
+                      className="neu-btn text-[#2d4cc8] text-xs font-extrabold px-3.5 py-2 rounded-xl flex items-center gap-1.5"
                     >
-                      View at {deal.storeOffers?.[0]?.store.split(" ")[0] || "Store"} ↗
+                      <span>🛒</span>
+                      <span>View Deal</span>
                     </a>
                   </div>
                 </div>
+              ))}
+            </div>
+          ) : (
+            /* MATRIX VIEW (Screenshot 3 horizontal cards + Store Breakdown!) */
+            !loading &&
+            otherDeals.map((deal, idx) => (
+              <div
+                key={deal._id || idx}
+                className="neu-card-hover rounded-2xl overflow-hidden"
+              >
+                <div className="p-5 grid grid-cols-1 md:grid-cols-12 gap-5 items-center border-b border-[#d1d9e6]">
+                  
+                  {/* Left Image (col-md-3) */}
+                  <div className="md:col-span-3 flex items-center justify-center p-2">
+                    <img
+                      src={deal.imageUrl}
+                      alt={deal.name}
+                      className="max-h-28 object-contain mix-blend-multiply"
+                    />
+                  </div>
 
-              </div>
+                  {/* Center Info (col-md-6) */}
+                  <div className="md:col-span-6 space-y-2">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="neu-pill-inset text-[10px] font-black text-[#6d28d9] px-2.5 py-0.5 rounded-full">
+                        {deal.badge || (idx === 0 ? "Lowest Entry Price" : idx === 1 ? "Popular Choice" : "In Stock")}
+                      </span>
+                      <span className="text-[10px] font-extrabold text-[#66799e] uppercase tracking-wider">
+                        {deal.modelCode || deal.category}
+                      </span>
+                    </div>
 
-              {/* Store Offer Matrix Row (Direct Quotes) */}
-              <div className="p-4 bg-slate-50/70">
-                <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 text-xs">
-                  <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-                    Store Price Breakdown:
-                  </span>
+                    <h3 className="text-base font-black text-[#31344b] leading-snug hover:text-[#2d4cc8] transition cursor-pointer">
+                      {deal.name}
+                    </h3>
 
-                  <div className="flex flex-wrap items-center gap-3">
-                    {(deal.storeOffers || []).map((so, sIdx) => (
-                      <div
-                        key={sIdx}
-                        className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border text-xs font-semibold ${
-                          so.isLowest
-                            ? "bg-white border-emerald-300 text-emerald-900 font-bold shadow-2xs"
-                            : "bg-white border-slate-200 text-slate-700"
-                        }`}
-                      >
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                        <span>{so.store}:</span>
-                        <span className="font-extrabold text-slate-900">৳{so.price.toLocaleString()}</span>
-                        {so.isLowest && (
-                          <span className="bg-emerald-100 text-emerald-800 text-[9px] px-1.5 py-0.2 rounded font-black">
-                            Lowest
+                    <div className="flex flex-wrap items-center gap-3">
+                      <StarRatingInline rating={(deal.rating || 4.8).toFixed(1)} />
+                      <span className="text-[#18634b] text-xs font-extrabold flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#10b981]"></span> In Stock
+                      </span>
+                    </div>
+
+                    <p className="text-xs text-[#44476a] font-medium line-clamp-1">
+                      {deal.specs?.join(" • ") || "Official BD Warranty • 3 Stores Stock Synchronized"}
+                    </p>
+                  </div>
+
+                  {/* Right Price & Action (col-md-3) */}
+                  <div className="md:col-span-3 md:border-l border-[#d1d9e6] md:pl-5 flex flex-row md:flex-col justify-between items-center md:items-stretch gap-3">
+                    <div>
+                      <span className="text-[10px] font-extrabold text-[#66799e] uppercase tracking-wider block">
+                        Best Live Price
+                      </span>
+                      <div className="flex items-baseline gap-2 flex-wrap">
+                        {deal.highestPrice && deal.highestPrice > (deal.lowestPrice || deal.price) && (
+                          <span className="text-xs text-[#66799e] line-through font-bold">
+                            ৳{deal.highestPrice.toLocaleString()}
                           </span>
                         )}
+                        <span className="text-2xl font-black text-[#a91e2c]">
+                          ৳{(deal.lowestPrice || deal.price).toLocaleString()}
+                        </span>
                       </div>
-                    ))}
+                      <span className="block text-[11px] text-[#44476a] font-semibold mt-0.5">
+                        at <strong className={getStoreAccent(deal.storeOffers?.[0]?.store || deal.store)}>{deal.storeOffers?.[0]?.store || deal.store}</strong>
+                      </span>
+                    </div>
+
+                    <div className="space-y-2">
+                      <a
+                        href={deal.productUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="neu-btn-primary w-full text-xs font-extrabold px-4 py-2 rounded-xl text-center block"
+                      >
+                        Details @ {deal.storeOffers?.[0]?.store.split(" ")[0] || "Store"} ↗
+                      </a>
+                      <button
+                        type="button"
+                        onClick={() => alert(`Added ${deal.name} to Wishlist!`)}
+                        className="neu-btn w-full text-[#44476a] hover:text-[#a91e2c] text-xs font-extrabold px-4 py-1.5 rounded-xl text-center hidden md:block cursor-pointer"
+                      >
+                        ♥ Wishlist
+                      </button>
+                    </div>
+                  </div>
+
+                </div>
+
+                {/* Store Offer Matrix Row */}
+                <div className="p-4 bg-[#e6e7ee]">
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 text-xs">
+                    <span className="text-[11px] font-black text-[#66799e] uppercase tracking-wider">
+                      Store Breakdown:
+                    </span>
+
+                    <div className="flex flex-wrap items-center gap-2.5">
+                      {(deal.storeOffers || []).map((so, sIdx) => (
+                        <a
+                          key={sIdx}
+                          href={so.productUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`neu-pill flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold transition hover:scale-[1.02] ${
+                            so.isLowest ? "text-[#18634b]" : "text-[#44476a]"
+                          }`}
+                        >
+                          <span className={`w-2 h-2 rounded-full ${so.isLowest ? "bg-[#10b981]" : "bg-[#93a0b8]"}`}></span>
+                          <span className={getStoreAccent(so.store)}>{so.store}:</span>
+                          <span className="font-black text-[#31344b]">৳{so.price.toLocaleString()}</span>
+                          {so.isLowest && (
+                            <span className="bg-[#059669] text-white text-[9px] px-1.5 py-0.5 rounded-full font-black">
+                              Lowest
+                            </span>
+                          )}
+                        </a>
+                      ))}
+                    </div>
                   </div>
                 </div>
-              </div>
 
-            </div>
-          ))}
+              </div>
+            ))
+          )}
 
           {/* =====================================================================
-              TARGETING A SPECIFIC BUDGET ALERT BOX
+              TARGETING A SPECIFIC BUDGET ALERT BOX (Neumorphic)
              ===================================================================== */}
-          <div className="bg-slate-900 text-white rounded-2xl p-5 md:p-6 shadow-md border border-slate-800">
+          <div className="neu-card rounded-2xl p-5 md:p-6">
             <div className="flex flex-col md:flex-row items-center justify-between gap-4">
               <div className="flex items-center gap-4">
-                <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-xl flex-shrink-0">
+                <div className="neu-inset w-12 h-12 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0">
                   📢
                 </div>
                 <div>
-                  <h4 className="text-sm font-extrabold">Targeting a specific budget for the {urlQuery}?</h4>
-                  <p className="text-xs text-slate-400 mt-0.5">
-                    Receive immediate SMS or Email notifications as soon as Star Tech, Ryans, or PCB Store breaches your threshold.
+                  <h4 className="text-sm font-black text-[#31344b]">
+                    Targeting a specific budget for <span className="text-[#2d4cc8]">{urlQuery}</span>?
+                  </h4>
+                  <p className="text-xs text-[#44476a] mt-0.5 font-medium">
+                    Receive immediate SMS or Email notifications as soon as Star Tech, Ryans, or PCB Store drops below your target.
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 w-full md:w-auto">
-                <div className="flex items-center bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 w-full md:w-36">
-                  <span className="text-slate-400 text-xs mr-1">৳</span>
+              <div className="flex items-center gap-2.5 w-full md:w-auto">
+                <div className="neu-inset flex items-center rounded-xl px-3.5 py-2.5 w-full md:w-36">
+                  <span className="text-[#2d4cc8] font-black text-xs mr-1.5">৳</span>
                   <input
                     type="text"
                     value={budgetTarget}
                     onChange={(e) => setBudgetTarget(e.target.value)}
-                    className="w-full bg-transparent outline-none text-xs font-bold text-white"
+                    className="w-full bg-transparent outline-none text-xs font-extrabold text-[#31344b]"
                   />
                 </div>
                 <button
                   type="button"
                   onClick={() => alert(`Tracking alert set for ৳${budgetTarget} on ${urlQuery}!`)}
-                  className="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-xs px-5 py-2.5 rounded-xl transition whitespace-nowrap cursor-pointer"
+                  className="neu-btn-emerald font-black text-xs px-5 py-2.5 rounded-xl whitespace-nowrap cursor-pointer"
                 >
                   Track Price Drop
                 </button>
@@ -933,39 +1094,39 @@ function SearchEngine() {
           </div>
 
           {/* PAGINATION */}
-          <div className="flex flex-col sm:flex-row justify-between items-center text-xs text-slate-500 gap-4 pt-4 border-t border-slate-200">
+          <div className="flex flex-col sm:flex-row justify-between items-center text-xs text-[#44476a] font-semibold gap-4 pt-4 border-t border-[#d1d9e6]">
             <span>
               Showing Items 1 to {filteredDeals.length} of {deals.length} {urlQuery} configurations
             </span>
 
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-2">
               <button
                 type="button"
-                className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-semibold cursor-pointer"
+                className="neu-btn px-3.5 py-1.5 rounded-xl text-[#44476a] font-extrabold cursor-pointer"
               >
                 Previous
               </button>
               <button
                 type="button"
-                className="px-3 py-1.5 rounded-lg bg-blue-600 text-white font-bold cursor-pointer"
+                className="neu-btn-active px-3.5 py-1.5 rounded-xl text-[#2d4cc8] font-black cursor-pointer"
               >
                 1
               </button>
               <button
                 type="button"
-                className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-semibold cursor-pointer"
+                className="neu-btn px-3.5 py-1.5 rounded-xl text-[#44476a] font-extrabold cursor-pointer"
               >
                 2
               </button>
               <button
                 type="button"
-                className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-semibold cursor-pointer"
+                className="neu-btn px-3.5 py-1.5 rounded-xl text-[#44476a] font-extrabold cursor-pointer"
               >
                 3
               </button>
               <button
                 type="button"
-                className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-semibold cursor-pointer"
+                className="neu-btn px-3.5 py-1.5 rounded-xl text-[#2d4cc8] font-extrabold cursor-pointer"
               >
                 Next Page
               </button>
@@ -973,12 +1134,15 @@ function SearchEngine() {
           </div>
 
           {/* PRICE TRANSPARENCY & COMPLIANCE NOTICE */}
-          <div className="bg-white border border-slate-200 rounded-2xl p-5 flex items-start gap-4 text-xs text-slate-500 leading-relaxed shadow-xs">
+          <div className="neu-inset rounded-2xl p-5 flex items-start gap-4 text-xs text-[#44476a] leading-relaxed">
             <span className="text-xl">🛡️</span>
             <div>
-              <p className="font-extrabold text-slate-800 mb-0.5">Price Transparency & Compliance Notice</p>
-              <p>
-                Price accuracy notice: Prices and availability are retrieved from retailer catalog indexes and refreshed every 30 minutes. Clicking &apos;Visit Store&apos; transfers you to the merchant checkout page. SmartPrice BD does not sell products directly and receives zero markup on hardware pricing. Verified partners include Star Tech, Ryans Computers, and PCB Store BD.
+              <p className="font-black text-[#31344b] mb-0.5">Price Transparency & Compliance Notice</p>
+              <p className="font-medium">
+                Prices and availability are retrieved from retailer catalog indexes and refreshed every 30 minutes. Clicking &apos;Details&apos; transfers you to the merchant checkout page. Verified partners include{" "}
+                <span className="text-[#a91e2c] font-bold">Star Tech</span>,{" "}
+                <span className="text-[#b45309] font-bold">Ryans Computers</span>, and{" "}
+                <span className="text-[#2d4cc8] font-bold">PCB Store BD</span>.
               </p>
             </div>
           </div>
@@ -992,7 +1156,7 @@ function SearchEngine() {
 
 export default function SearchPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-slate-500 font-bold">Loading Search Results...</div>}>
+    <Suspense fallback={<div className="min-h-screen bg-[#e6e7ee] flex items-center justify-center text-[#2d4cc8] font-black">Loading Search Results...</div>}>
       <SearchEngine />
     </Suspense>
   );

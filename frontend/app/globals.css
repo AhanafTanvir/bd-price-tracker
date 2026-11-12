@@ -1,26 +1,307 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
+  --background: #e6e7ee;
+  --foreground: #31344b;
+  --neu-bg: #e6e7ee;
+  --neu-text-primary: #31344b;
+  --neu-text-secondary: #44476a;
+  --neu-text-muted: #66799e;
+  --neu-border: #d1d9e6;
+  --neu-shadow-dark: #b8b9be;
+  --neu-shadow-light: #ffffff;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+html,
+body {
+  background-color: #e6e7ee;
+  color: #31344b;
+  overflow-x: hidden;
+}
+
+/* ==========================================================================
+   NEUMORPHISM UI DESIGN SYSTEM (Themesberg Soft-Shadow Pattern + Color)
+   ========================================================================== */
+
+.neu-card {
+  background-color: #e6e7ee;
+  border: 1px solid #d1d9e6;
+  box-shadow: 6px 6px 12px #b8b9be, -6px -6px 12px #ffffff;
+}
+
+.neu-card-sm {
+  background-color: #e6e7ee;
+  border: 1px solid #d1d9e6;
+  box-shadow: 3px 3px 6px #b8b9be, -3px -3px 6px #ffffff;
+}
+
+.neu-card-hover {
+  background-color: #e6e7ee;
+  border: 1px solid #d1d9e6;
+  box-shadow: 6px 6px 12px #b8b9be, -6px -6px 12px #ffffff;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.neu-card-hover:hover {
+  box-shadow: 8px 8px 16px #b8b9be, -8px -8px 16px #ffffff;
+  transform: translateY(-2px);
+  border-color: #c2cde0;
+}
+
+/* Recessed / Pressed Wells */
+.neu-inset {
+  background-color: #e6e7ee;
+  border: 1px solid #d1d9e6;
+  box-shadow: inset 2px 2px 5px #b8b9be, inset -3px -3px 7px #ffffff;
+}
+
+.neu-inset-deep {
+  background-color: #e6e7ee;
+  border: 1px solid #d1d9e6;
+  box-shadow: inset 3px 3px 6px #b8b9be, inset -3px -3px 6px #ffffff;
+}
+
+/* Soft Raised Button (transitions to inset on hover/active) */
+.neu-btn {
+  background-color: #e6e7ee;
+  border: 1px solid #d1d9e6;
+  box-shadow: 3px 3px 6px #b8b9be, -3px -3px 6px #ffffff;
+  transition: all 0.18s ease;
+}
+
+.neu-btn:hover {
+  box-shadow: inset 2px 2px 5px #b8b9be, inset -3px -3px 7px #ffffff;
+}
+
+.neu-btn:active,
+.neu-btn-active {
+  background-color: #e6e7ee;
+  border: 1px solid #c5d0e2;
+  box-shadow: inset 2px 2px 5px #b8b9be, inset -3px -3px 7px #ffffff;
+}
+
+/* Colorful Primary CTA Button with Neumorphic Elevation */
+.neu-btn-primary {
+  background: linear-gradient(135deg, #2d4cc8 0%, #4f46e5 100%);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  box-shadow: 4px 4px 10px #b8b9be, -3px -3px 8px #ffffff;
+  transition: all 0.2s ease;
+}
+
+.neu-btn-primary:hover {
+  background: linear-gradient(135deg, #243ea8 0%, #4338ca 100%);
+  box-shadow: 2px 2px 6px #b8b9be, -2px -2px 6px #ffffff;
+  transform: translateY(1px);
+}
+
+.neu-btn-emerald {
+  background: linear-gradient(135deg, #059669 0%, #0d9488 100%);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  box-shadow: 4px 4px 10px #b8b9be, -3px -3px 8px #ffffff;
+  transition: all 0.2s ease;
+}
+
+.neu-btn-emerald:hover {
+  background: linear-gradient(135deg, #047857 0%, #0f766e 100%);
+  box-shadow: 2px 2px 6px #b8b9be, -2px -2px 6px #ffffff;
+  transform: translateY(1px);
+}
+
+.neu-btn-purple {
+  background: linear-gradient(135deg, #6d28d9 0%, #2d4cc8 100%);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  box-shadow: 4px 4px 10px #b8b9be, -3px -3px 8px #ffffff;
+  transition: all 0.2s ease;
+}
+
+.neu-btn-purple:hover {
+  background: linear-gradient(135deg, #5b21b6 0%, #243ea8 100%);
+  box-shadow: 2px 2px 6px #b8b9be, -2px -2px 6px #ffffff;
+  transform: translateY(1px);
+}
+
+/* Badges & Pills */
+.neu-pill {
+  background-color: #e6e7ee;
+  border: 1px solid #d1d9e6;
+  box-shadow: 2px 2px 5px #b8b9be, -2px -2px 5px #ffffff;
+}
+
+.neu-pill-inset {
+  background-color: #e6e7ee;
+  border: 1px solid #d1d9e6;
+  box-shadow: inset 1.5px 1.5px 3px #b8b9be, inset -1.5px -1.5px 3px #ffffff;
+}
+
+/* Range Slider (Screenshot 4 pattern) */
+input[type="range"].neu-range {
+  -webkit-appearance: none;
+  appearance: none;
+  background: #e6e7ee;
+  height: 8px;
+  border-radius: 999px;
+  border: 1px solid #d1d9e6;
+  box-shadow: inset 2px 2px 4px #b8b9be, inset -2px -2px 4px #ffffff;
+  outline: none;
+}
+
+input[type="range"].neu-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #e6e7ee;
+  border: 2px solid #2d4cc8;
+  box-shadow: 3px 3px 6px #b8b9be, -3px -3px 6px #ffffff;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+input[type="range"].neu-range::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+}
+
+input[type="range"].neu-range::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #e6e7ee;
+  border: 2px solid #2d4cc8;
+  box-shadow: 3px 3px 6px #b8b9be, -3px -3px 6px #ffffff;
+  cursor: pointer;
+}
+
+/* Hide scrollbars cleanly where used */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Synchronized Hero Banner Animations */
+@keyframes neuPopUp {
+  0% {
+    opacity: 0;
+    transform: translateY(14px) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@keyframes neuSlideRight {
+  0% {
+    opacity: 0;
+    transform: translateX(48px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
 }
+
+@keyframes neuFloat {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes neuProgress {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+.animate-neu-pop {
+  animation: neuPopUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.animate-neu-slide-right {
+  animation: neuSlideRight 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.animate-neu-float {
+  animation: neuFloat 4.2s ease-in-out infinite;
+}
+
+.animate-neu-progress {
+  animation: neuProgress 3.8s linear forwards;
+}
+
+@keyframes monitorCursor {
+  0% {
+    left: 20%;
+    top: 68%;
+    transform: scale(1);
+  }
+  30% {
+    left: 62%;
+    top: 26%;
+    transform: scale(1);
+  }
+  40% {
+    left: 62%;
+    top: 26%;
+    transform: scale(0.85);
+  }
+  50% {
+    left: 62%;
+    top: 26%;
+    transform: scale(1);
+  }
+  80% {
+    left: 72%;
+    top: 72%;
+    transform: scale(1);
+  }
+  90% {
+    left: 72%;
+    top: 72%;
+    transform: scale(0.85);
+  }
+  100% {
+    left: 72%;
+    top: 72%;
+    transform: scale(1);
+  }
+}
+
+.animate-monitor-cursor {
+  animation: monitorCursor 3.6s ease-in-out infinite;
+}
+
+@keyframes caretBlink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.animate-caret-blink {
+  animation: caretBlink 0.9s step-end infinite;
+}
+

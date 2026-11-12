@@ -22,65 +22,67 @@ export default function Navbar() {
   };
 
   const navCategories = [
-    { name: "Graphics Cards", q: "Graphics Cards" },
-    { name: "Processors", q: "Processors" },
-    { name: "Motherboards", q: "Motherboards" },
-    { name: "RAM", q: "RAM" },
-    { name: "Storage", q: "Storage" },
-    { name: "Laptops", q: "Laptop" },
-    { name: "Monitors", q: "Monitors" },
-    { name: "Power & Cases", q: "Power & Cases" },
+    { name: "Graphics Cards", q: "Graphics Cards", dot: "bg-[#2d4cc8]" },
+    { name: "Processors", q: "Processors", dot: "bg-[#6d28d9]" },
+    { name: "Motherboards", q: "Motherboards", dot: "bg-[#059669]" },
+    { name: "RAM", q: "RAM", dot: "bg-[#0891b2]" },
+    { name: "Storage", q: "Storage", dot: "bg-[#d97706]" },
+    { name: "Laptops", q: "Laptop", dot: "bg-[#e11d48]" },
+    { name: "Monitors", q: "Monitors", dot: "bg-[#4f46e5]" },
+    { name: "Power & Cases", q: "Power & Cases", dot: "bg-[#0d9488]" },
   ];
 
   return (
     <>
       {/* 1. Top Utility Micro-Bar */}
-      <div className="bg-white border-b border-slate-200 text-[11px] text-slate-500 py-1.5 px-4 md:px-8">
+      <div className="bg-[#e6e7ee] border-b border-[#d1d9e6] text-[11px] text-[#44476a] py-2 px-4 md:px-8">
         <div className="max-w-[1600px] mx-auto flex justify-between items-center">
           <div className="flex items-center gap-3">
-            <span className="flex items-center gap-1.5 font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span className="neu-pill flex items-center gap-1.5 font-bold text-[#18634b] px-2.5 py-0.5 rounded-full">
+              <span className="w-2 h-2 rounded-full bg-[#10b981] animate-pulse"></span>
               VERIFIED LIVE STORES:
             </span>
-            <span className="text-slate-600 font-medium hidden sm:inline">
-              Star Tech <span className="text-slate-300">•</span> Ryans <span className="text-slate-300">•</span> PCB Store
+            <span className="text-[#44476a] font-semibold hidden sm:inline-flex items-center gap-2">
+              <span className="text-[#a91e2c] font-bold">Star Tech</span>
+              <span className="text-[#93a0b8]">•</span>
+              <span className="text-[#b45309] font-bold">Ryans</span>
+              <span className="text-[#93a0b8]">•</span>
+              <span className="text-[#2d4cc8] font-bold">PCB Store</span>
             </span>
           </div>
-          <div className="flex items-center gap-4 font-medium text-slate-500">
-            <span className="flex items-center gap-1">
+          <div className="flex items-center gap-3 font-semibold text-[#44476a]">
+            <span className="hidden sm:flex items-center gap-1.5 text-[#18634b]">
               <span>🕒</span> Updated 18 mins ago
             </span>
-            <span className="text-slate-300">|</span>
-            <span className="hover:text-blue-600 cursor-pointer">EN</span>
-            <span className="text-slate-300">/</span>
-            <span className="text-slate-700 font-bold flex items-center gap-1">
-              <span className="text-blue-600">৳</span> BDT
+            <span className="text-[#b8b9be] hidden sm:inline">|</span>
+            <span className="neu-pill-inset px-2.5 py-0.5 rounded-full text-[#31344b] font-bold flex items-center gap-1">
+              <span className="text-[#2d4cc8] font-black">৳</span> BDT
             </span>
           </div>
         </div>
       </div>
 
       {/* 2. Main Navigation Header */}
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-xs">
-        <div className="max-w-[1600px] mx-auto px-4 md:px-8 h-16 flex items-center justify-between gap-4 md:gap-6">
+      <header className="bg-[#e6e7ee]/95 backdrop-blur-md border-b border-[#d1d9e6] sticky top-0 z-50 shadow-[0_6px_16px_rgba(184,185,190,0.45)]">
+        <div className="max-w-[1600px] mx-auto px-4 md:px-8 h-18 flex items-center justify-between gap-4 md:gap-6">
           
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 flex-shrink-0 group">
-            <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center text-white font-extrabold text-xl shadow-md shadow-blue-600/20 group-hover:bg-blue-700 transition">
+          <Link href="/" className="flex items-center gap-3 flex-shrink-0 group">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#2d4cc8] via-[#4f46e5] to-[#6d28d9] flex items-center justify-center text-white font-black text-xl shadow-[3px_3px_6px_#b8b9be,-3px_-3px_6px_#ffffff] group-hover:scale-105 transition">
               S
             </div>
             <div>
               <div className="flex items-center">
-                <span className="text-xl font-black tracking-tight text-slate-900 leading-none">SmartPrice</span>
-                <span className="text-xl font-black tracking-tight text-blue-600 leading-none">BD</span>
+                <span className="text-xl font-black tracking-tight text-[#31344b] leading-none">SmartPrice</span>
+                <span className="text-xl font-black tracking-tight text-[#2d4cc8] leading-none">BD</span>
               </div>
-              <p className="text-[9px] font-extrabold text-slate-400 tracking-widest uppercase mt-0.5">Tech Aggregator</p>
+              <p className="text-[9px] font-extrabold text-[#6d28d9] tracking-widest uppercase mt-0.5">Tech Aggregator</p>
             </div>
           </Link>
 
-          {/* Center Global Search Bar */}
+          {/* Center Global Search Bar (Recessed Neumorphic Well) */}
           <form onSubmit={handleSearch} className="flex-1 max-w-2xl hidden md:flex items-center">
-            <div className="flex w-full border border-slate-300 rounded-xl overflow-hidden bg-slate-50/80 focus-within:border-blue-600 focus-within:bg-white focus-within:ring-3 ring-blue-100 transition shadow-xs">
+            <div className="neu-inset flex w-full rounded-2xl overflow-hidden p-1 focus-within:border-[#2d4cc8]/50 transition">
               <select
                 value={selectedCategory}
                 onChange={(e) => {
@@ -89,7 +91,7 @@ export default function Navbar() {
                     router.push(`/search?q=${encodeURIComponent(e.target.value)}`);
                   }
                 }}
-                className="bg-slate-100/80 border-r border-slate-200 px-3.5 text-xs font-semibold text-slate-700 outline-none hover:bg-slate-200/60 cursor-pointer"
+                className="bg-transparent border-r border-[#d1d9e6] px-3.5 text-xs font-bold text-[#2d4cc8] outline-none cursor-pointer"
               >
                 <option value="All Hardware">All Hardware</option>
                 <option value="Graphics Cards">Graphics Cards</option>
@@ -103,22 +105,24 @@ export default function Navbar() {
               </select>
               
               <div className="flex-1 flex items-center px-3.5">
-                <span className="text-slate-400 text-sm mr-2">🔍</span>
+                <svg className="w-4 h-4 text-[#2d4cc8] mr-2 shrink-0" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1010.5 18a7.5 7.5 0 006.15-3.35z" />
+                </svg>
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search GPUs, CPUs, Motherboards, Monitors..."
-                  className="w-full py-2.5 bg-transparent outline-none text-xs md:text-sm font-medium text-slate-800 placeholder-slate-400"
+                  className="w-full py-2 bg-transparent outline-none text-xs md:text-sm font-semibold text-[#31344b] placeholder-[#66799e]"
                 />
-                <kbd className="hidden lg:inline-block px-1.5 py-0.5 text-[10px] font-semibold text-slate-400 bg-slate-200/70 border border-slate-300 rounded">
+                <kbd className="neu-pill hidden lg:inline-block px-2 py-0.5 text-[10px] font-bold text-[#44476a] rounded-md">
                   ⌘K
                 </kbd>
               </div>
 
               <button
                 type="submit"
-                className="bg-blue-600 text-white px-5 text-xs font-bold hover:bg-blue-700 transition flex items-center justify-center cursor-pointer"
+                className="neu-btn-primary px-5 py-2 rounded-xl text-xs font-bold flex items-center justify-center cursor-pointer"
               >
                 Search
               </button>
@@ -126,10 +130,10 @@ export default function Navbar() {
           </form>
 
           {/* Right Action Menu */}
-          <div className="flex items-center gap-2 lg:gap-4 text-xs font-semibold text-slate-700">
+          <div className="flex items-center gap-2.5 lg:gap-3 text-xs font-bold text-[#31344b]">
             <button
               onClick={() => router.push("/search?q=RTX%204060")}
-              className="bg-blue-50 text-blue-700 hover:bg-blue-100 px-3 py-2 rounded-lg flex items-center gap-1.5 border border-blue-200/80 transition cursor-pointer"
+              className="neu-btn text-[#2d4cc8] px-3.5 py-2 rounded-xl flex items-center gap-1.5 cursor-pointer"
             >
               <span>📊</span>
               <span className="hidden sm:inline">Compare</span>
@@ -137,55 +141,51 @@ export default function Navbar() {
 
             <button
               onClick={() => router.push("/pc-builder")}
-              className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold px-3 py-1.5 rounded-lg text-xs hover:from-blue-700 hover:to-indigo-700 transition flex items-center gap-1.5 shadow-sm shadow-blue-500/20 cursor-pointer"
+              className="neu-btn-purple px-3.5 py-2 rounded-xl text-xs font-extrabold flex items-center gap-1.5 cursor-pointer"
             >
               <span className="animate-pulse">✨</span>
               <span>AI PC Builder</span>
-              <span className="bg-white/20 text-[9px] uppercase px-1 rounded font-black tracking-wider">NEW</span>
+              <span className="bg-white/25 text-[9px] uppercase px-1.5 py-0.5 rounded-full font-black tracking-wider">NEW</span>
             </button>
 
             <button
               onClick={() => router.push("/#alerts")}
-              className="hover:text-blue-600 hidden lg:flex items-center gap-1 py-1.5 px-2 transition cursor-pointer"
+              className="neu-btn hidden lg:flex items-center gap-1.5 py-2 px-3 rounded-xl text-[#44476a] hover:text-[#2d4cc8] cursor-pointer"
             >
               Price Alerts
             </button>
 
             <button
               onClick={() => router.push("/search?q=RTX%204060")}
-              className="hover:text-blue-600 hidden sm:flex items-center gap-1.5 py-1.5 px-2 transition cursor-pointer"
+              className="neu-btn hidden sm:flex items-center gap-1.5 py-2 px-3 rounded-xl text-[#44476a] hover:text-[#a91e2c] cursor-pointer"
             >
-              <span>Saved Deals</span>
-              <span className="bg-blue-100 text-blue-700 text-[10px] font-black px-1.5 py-0.2 rounded-full">
+              <span>Saved</span>
+              <span className="neu-pill-inset text-[#a91e2c] text-[10px] font-black px-2 py-0.5 rounded-full">
                 3
               </span>
             </button>
 
-            <button className="hover:text-blue-600 hidden sm:inline-block py-1.5 px-2 transition cursor-pointer">
-              Sign In
-            </button>
-
             <button
               onClick={() => router.push("/#alerts")}
-              className="bg-blue-600 text-white px-3.5 py-2 rounded-xl hover:bg-blue-700 transition font-bold shadow-sm shadow-blue-600/20 text-xs flex items-center gap-1.5 cursor-pointer"
+              className="neu-btn-emerald px-3.5 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 cursor-pointer"
             >
               <span>🔔</span>
-              <span>Get Price Alerts</span>
+              <span className="hidden xl:inline">Get Price Alerts</span>
             </button>
 
-            <div className="w-8 h-8 rounded-full bg-slate-100 border border-slate-300 flex items-center justify-center text-slate-600 text-xs font-bold cursor-pointer hover:bg-slate-200 transition">
+            <div className="neu-btn w-9 h-9 rounded-full flex items-center justify-center text-[#2d4cc8] text-sm font-bold cursor-pointer">
               👤
             </div>
           </div>
         </div>
 
         {/* 3. Horizontal Sub-Navigation Categories Bar */}
-        <div className="border-t border-slate-100 bg-white">
-          <div className="max-w-[1600px] mx-auto px-4 md:px-8 h-10 flex items-center gap-6 text-xs text-slate-600 overflow-x-auto whitespace-nowrap scrollbar-none">
-            <span className="font-extrabold text-slate-400 tracking-wider uppercase text-[10px]">HARDWARE:</span>
+        <div className="border-t border-[#d1d9e6] bg-[#e6e7ee]">
+          <div className="max-w-[1600px] mx-auto px-4 md:px-8 h-12 flex items-center gap-3 text-xs text-[#44476a] overflow-x-auto whitespace-nowrap scrollbar-none">
+            <span className="font-black text-[#66799e] tracking-wider uppercase text-[10px] mr-1">HARDWARE:</span>
             <button
               onClick={() => router.push("/pc-builder")}
-              className="text-blue-600 font-bold flex items-center gap-1 hover:text-blue-800 transition py-1 px-2.5 rounded-md bg-blue-50 border border-blue-200/60 shrink-0"
+              className="neu-btn text-[#6d28d9] font-extrabold flex items-center gap-1.5 py-1.5 px-3 rounded-xl shrink-0 cursor-pointer"
             >
               <span>✨</span>
               <span>AI PC Builder</span>
@@ -194,9 +194,10 @@ export default function Navbar() {
               <button
                 key={cat.name}
                 onClick={() => router.push(`/search?q=${encodeURIComponent(cat.q)}`)}
-                className="hover:text-blue-600 font-medium transition cursor-pointer flex items-center gap-1 py-2"
+                className="neu-pill hover:text-[#2d4cc8] text-[#31344b] font-bold transition cursor-pointer flex items-center gap-1.5 py-1.5 px-3 rounded-xl hover:shadow-[inset_2px_2px_4px_#b8b9be,inset_-2px_-2px_4px_#ffffff]"
               >
-                {cat.name}
+                <span className={`w-1.5 h-1.5 rounded-full ${cat.dot}`}></span>
+                <span>{cat.name}</span>
               </button>
             ))}
           </div>
