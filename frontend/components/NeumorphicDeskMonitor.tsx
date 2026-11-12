@@ -219,46 +219,46 @@ export default function NeumorphicDeskMonitor({
 
   const keyboardRows: KeyboardKey[][] = [
     [
-      { id: "ESC", label: "ESC", w: "w-7", color: "text-[#a91e2c]", target: 0 },
-      { id: "1", label: "GPU", w: "w-8", color: "text-[#2d4cc8]", target: 0 },
-      { id: "2", label: "RAM", w: "w-8", color: "text-[#0891b2]", target: 1 },
-      { id: "3", label: "MON", w: "w-8", color: "text-[#a91e2c]", target: 2 },
-      { id: "4", label: "CPU", w: "w-8", color: "text-[#6d28d9]", target: 3 },
-      { id: "5", label: "SSD", w: "w-8", color: "text-[#b45309]", target: 4 },
-      { id: "6", label: "LAP", w: "w-8", color: "text-[#4f46e5]", target: 5 },
-      { id: "7", label: "MB", w: "w-7", color: "text-[#18634b]", target: 6 },
-      { id: "8", label: "PSU", w: "w-7", color: "text-[#0d9488]", target: 7 },
-      { id: "DEL", label: "⌫", w: "w-9", color: "text-[#44476a]" },
+      { id: "ESC", label: "ESC", w: "flex-[1.15]", color: "text-[#a91e2c]", target: 0 },
+      { id: "1", label: "GPU", w: "flex-1", color: "text-[#2d4cc8]", target: 0 },
+      { id: "2", label: "RAM", w: "flex-1", color: "text-[#0891b2]", target: 1 },
+      { id: "3", label: "MON", w: "flex-1", color: "text-[#a91e2c]", target: 2 },
+      { id: "4", label: "CPU", w: "flex-1", color: "text-[#6d28d9]", target: 3 },
+      { id: "5", label: "SSD", w: "flex-1", color: "text-[#b45309]", target: 4 },
+      { id: "6", label: "LAP", w: "flex-1", color: "text-[#4f46e5]", target: 5 },
+      { id: "7", label: "MB", w: "flex-1", color: "text-[#18634b]", target: 6 },
+      { id: "8", label: "PSU", w: "flex-1", color: "text-[#0d9488]", target: 7 },
+      { id: "DEL", label: "⌫", w: "flex-[1.25]", color: "text-[#44476a]" },
     ],
     [
-      { id: "TAB", label: "⇥", w: "w-9", color: "text-[#66799e]" },
-      { id: "Q", label: "Q", w: "w-7", color: "text-[#44476a]" },
-      { id: "W", label: "W", w: "w-7", color: "text-[#2d4cc8]", action: "up" },
-      { id: "E", label: "E", w: "w-7", color: "text-[#44476a]" },
-      { id: "R", label: "R", w: "w-7", color: "text-[#44476a]" },
-      { id: "T", label: "T", w: "w-7", color: "text-[#44476a]" },
-      { id: "Y", label: "Y", w: "w-7", color: "text-[#44476a]" },
-      { id: "U", label: "U", w: "w-7", color: "text-[#44476a]" },
-      { id: "I", label: "I", w: "w-7", color: "text-[#44476a]" },
-      { id: "P", label: "P", w: "w-8", color: "text-[#44476a]" },
+      { id: "TAB", label: "⇥", w: "flex-[1.35]", color: "text-[#66799e]" },
+      { id: "Q", label: "Q", w: "flex-1", color: "text-[#44476a]" },
+      { id: "W", label: "W", w: "flex-1", color: "text-[#2d4cc8]", action: "up" },
+      { id: "E", label: "E", w: "flex-1", color: "text-[#44476a]" },
+      { id: "R", label: "R", w: "flex-1", color: "text-[#44476a]" },
+      { id: "T", label: "T", w: "flex-1", color: "text-[#44476a]" },
+      { id: "Y", label: "Y", w: "flex-1", color: "text-[#44476a]" },
+      { id: "U", label: "U", w: "flex-1", color: "text-[#44476a]" },
+      { id: "I", label: "I", w: "flex-1", color: "text-[#44476a]" },
+      { id: "P", label: "P", w: "flex-[1.15]", color: "text-[#44476a]" },
     ],
     [
-      { id: "CAPS", label: "⇪", w: "w-10", color: "text-[#66799e]" },
-      { id: "A", label: "A", w: "w-7", color: "text-[#2d4cc8]" },
-      { id: "S", label: "S", w: "w-7", color: "text-[#2d4cc8]", action: "down" },
-      { id: "D", label: "D", w: "w-7", color: "text-[#2d4cc8]" },
-      { id: "F", label: "F", w: "w-7", color: "text-[#44476a]" },
-      { id: "G", label: "G", w: "w-7", color: "text-[#44476a]" },
-      { id: "H", label: "H", w: "w-7", color: "text-[#44476a]" },
-      { id: "J", label: "J", w: "w-7", color: "text-[#44476a]" },
-      { id: "ENT", label: "↵", w: "w-11", color: "text-[#2d4cc8]" },
+      { id: "CAPS", label: "⇪", w: "flex-[1.45]", color: "text-[#66799e]" },
+      { id: "A", label: "A", w: "flex-1", color: "text-[#2d4cc8]" },
+      { id: "S", label: "S", w: "flex-1", color: "text-[#2d4cc8]", action: "down" },
+      { id: "D", label: "D", w: "flex-1", color: "text-[#2d4cc8]" },
+      { id: "F", label: "F", w: "flex-1", color: "text-[#44476a]" },
+      { id: "G", label: "G", w: "flex-1", color: "text-[#44476a]" },
+      { id: "H", label: "H", w: "flex-1", color: "text-[#44476a]" },
+      { id: "J", label: "J", w: "flex-1", color: "text-[#44476a]" },
+      { id: "ENT", label: "↵", w: "flex-[1.65]", color: "text-[#2d4cc8]" },
     ],
     [
-      { id: "CTRL", label: "CTRL", w: "w-9", color: "text-[#66799e]" },
-      { id: "FN", label: "AI", w: "w-8", color: "text-[#6d28d9]", action: "ai" },
-      { id: "SPACE", label: "SMARTPRICEBD", w: "flex-1", color: "text-[#2d4cc8]", action: "pause" },
-      { id: "UP", label: "▲", w: "w-7", color: "text-[#44476a]", action: "up" },
-      { id: "DOWN", label: "▼", w: "w-7", color: "text-[#44476a]", action: "down" },
+      { id: "CTRL", label: "CTRL", w: "flex-[1.3]", color: "text-[#66799e]" },
+      { id: "FN", label: "AI", w: "flex-[1.1]", color: "text-[#6d28d9]", action: "ai" },
+      { id: "SPACE", label: "SMARTPRICEBD", w: "flex-[4.5]", color: "text-[#2d4cc8]", action: "pause" },
+      { id: "UP", label: "▲", w: "flex-1", color: "text-[#44476a]", action: "up" },
+      { id: "DOWN", label: "▼", w: "flex-1", color: "text-[#44476a]", action: "down" },
     ],
   ];
 
@@ -287,17 +287,17 @@ export default function NeumorphicDeskMonitor({
           <div className="relative rounded-[14px] overflow-hidden bg-[#e6e7ee] border border-[#c8d0e0] h-[290px] sm:h-[325px] flex flex-col">
             
             {/* Mini Browser Top Chrome */}
-            <div className="bg-[#e6e7ee] border-b border-[#d1d9e6] px-3 py-1.5 flex items-center justify-between gap-2 shrink-0 z-30">
-              <div className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-[#e11d48]"></span>
-                <span className="w-2 h-2 rounded-full bg-[#f59e0b]"></span>
-                <span className="w-2 h-2 rounded-full bg-[#10b981]"></span>
+            <div className="bg-[#e6e7ee] border-b border-[#d1d9e6] px-2 sm:px-3 py-1.5 flex items-center justify-between gap-1.5 sm:gap-2 shrink-0 z-30">
+              <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
+                <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#e11d48]"></span>
+                <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#f59e0b]"></span>
+                <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#10b981]"></span>
               </div>
 
-              <div className="neu-inset px-2.5 py-0.5 rounded-full text-[9px] font-extrabold text-[#44476a] flex items-center gap-1.5 truncate max-w-[220px]">
-                <span className="text-[#18634b]">🔒</span>
-                <span>smartpricebd.com</span>
-                <span className="text-[#2d4cc8]">• {activeSectionLabel}</span>
+              <div className="neu-inset px-2 sm:px-2.5 py-0.5 rounded-full text-[8px] sm:text-[9px] font-extrabold text-[#44476a] flex items-center gap-1 truncate min-w-0 flex-1 max-w-[155px] sm:max-w-[230px]">
+                <span className="text-[#18634b] shrink-0">🔒</span>
+                <span className="truncate">smartpricebd.com</span>
+                <span className="text-[#2d4cc8] hidden sm:inline truncate">• {activeSectionLabel}</span>
               </div>
 
               <button
@@ -603,20 +603,20 @@ export default function NeumorphicDeskMonitor({
         </div>
 
         {/* Bottom Monitor Chin: Brand Logo, Power LED, Tactile OSD Scroll/Play Controls */}
-        <div className="mt-3 px-2 flex items-center justify-between gap-2">
-          <div className="flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#10b981] shadow-[0_0_6px_#10b981]"></span>
-            <span className="text-[10px] font-black tracking-widest uppercase text-[#66799e]">
+        <div className="mt-2.5 sm:mt-3 px-1 sm:px-2 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-1.5 min-w-0">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#10b981] shadow-[0_0_6px_#10b981] shrink-0"></span>
+            <span className="text-[9px] sm:text-[10px] font-black tracking-wider sm:tracking-widest uppercase text-[#66799e] truncate">
               SmartPriceBD Display
             </span>
           </div>
 
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
             <button
               type="button"
               onClick={() => scrollByDelta(-120)}
               title="Scroll Up"
-              className="neu-btn w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-black text-[#44476a] hover:text-[#2d4cc8] cursor-pointer"
+              className="neu-btn w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center text-[8px] sm:text-[9px] font-black text-[#44476a] hover:text-[#2d4cc8] cursor-pointer"
             >
               ▲
             </button>
@@ -624,7 +624,7 @@ export default function NeumorphicDeskMonitor({
               type="button"
               onClick={onTogglePause}
               title={isPaused ? "Auto-Scroll" : "Pause"}
-              className="neu-btn w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-black text-[#2d4cc8] cursor-pointer"
+              className="neu-btn w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center text-[8px] sm:text-[9px] font-black text-[#2d4cc8] cursor-pointer"
             >
               {isPaused ? "▶" : "❚❚"}
             </button>
@@ -632,14 +632,14 @@ export default function NeumorphicDeskMonitor({
               type="button"
               onClick={() => scrollByDelta(120)}
               title="Scroll Down"
-              className="neu-btn w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-black text-[#44476a] hover:text-[#2d4cc8] cursor-pointer"
+              className="neu-btn w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center text-[8px] sm:text-[9px] font-black text-[#44476a] hover:text-[#2d4cc8] cursor-pointer"
             >
               ▼
             </button>
             <button
               type="button"
               onClick={() => navigateTo(`/search?q=${encodeURIComponent(active.searchQuery)}`)}
-              className="neu-btn-primary text-[10px] font-extrabold px-2.5 py-1 rounded-full ml-1 cursor-pointer"
+              className="neu-btn-primary text-[9px] sm:text-[10px] font-extrabold px-2 sm:px-2.5 py-1 rounded-full ml-0.5 sm:ml-1 cursor-pointer whitespace-nowrap"
             >
               Open {active.shortLabel} ↗
             </button>
@@ -649,22 +649,22 @@ export default function NeumorphicDeskMonitor({
 
       {/* Sculpted Neumorphic Monitor Stand (Neck & Base) */}
       <div className="flex flex-col items-center -mt-0.5 relative z-0">
-        <div className="w-14 h-7 bg-[#e6e7ee] border-x border-[#d1d9e6] shadow-[5px_2px_10px_#b8b9be,-5px_2px_10px_#ffffff]"></div>
-        <div className="neu-card w-44 sm:w-52 h-3.5 rounded-full flex items-center justify-center">
-          <div className="w-24 h-1 rounded-full bg-gradient-to-r from-[#2d4cc8]/40 via-[#6d28d9]/40 to-[#10b981]/40"></div>
+        <div className="w-12 sm:w-14 h-6 sm:h-7 bg-[#e6e7ee] border-x border-[#d1d9e6] shadow-[5px_2px_10px_#b8b9be,-5px_2px_10px_#ffffff]"></div>
+        <div className="neu-card w-36 sm:w-52 h-3 sm:h-3.5 rounded-full flex items-center justify-center">
+          <div className="w-20 sm:w-24 h-1 rounded-full bg-gradient-to-r from-[#2d4cc8]/40 via-[#6d28d9]/40 to-[#10b981]/40"></div>
         </div>
       </div>
 
       {/* =========================================================================
-          2. NEUMORPHIC KEYBOARD & MOUSE DESK SETUP
+          2. NEUMORPHIC KEYBOARD & MOUSE DESK SETUP (100% Responsive Mobile Fit)
          ========================================================================= */}
-      <div className="mt-4 flex items-end justify-center gap-3 sm:gap-4 px-1">
+      <div className="mt-3 sm:mt-4 flex items-end justify-center gap-2 sm:gap-4 w-full max-w-full">
         
         {/* Neumorphic Mechanical Keyboard */}
-        <div className="neu-card rounded-2xl p-2 sm:p-2.5 flex-1 max-w-[430px]">
-          <div className="space-y-1.5">
+        <div className="neu-card rounded-2xl p-1.5 sm:p-2.5 flex-1 min-w-0 max-w-[430px]">
+          <div className="space-y-1 sm:space-y-1.5">
             {keyboardRows.map((row, rIdx) => (
-              <div key={rIdx} className="flex items-center gap-1 sm:gap-1.5">
+              <div key={rIdx} className="flex items-center gap-0.5 sm:gap-1.5 w-full">
                 {row.map((key) => {
                   const isActiveTarget =
                     typeof key.target === "number" && key.target === activeSlideIndex;
@@ -691,18 +691,18 @@ export default function NeumorphicDeskMonitor({
                           triggerKeyVisual(key.id, key.target);
                         }
                       }}
-                      className={`${key.w} h-5 sm:h-6 rounded-md text-[7px] sm:text-[8px] font-black flex items-center justify-center transition cursor-pointer shrink-0 ${
+                      className={`${key.w} min-w-0 h-5 sm:h-6 rounded-md text-[6.5px] sm:text-[8px] font-black flex items-center justify-center transition cursor-pointer px-0.5 ${
                         isKeyPressed
                           ? `neu-inset ${key.color}`
                           : `neu-btn ${key.color}`
                       }`}
                     >
                       {key.id === "SPACE" ? (
-                        <span className="flex items-center gap-1.5">
-                          <span className="w-10 sm:w-14 h-0.5 rounded-full bg-gradient-to-r from-[#2d4cc8] via-[#6d28d9] to-[#10b981]" />
+                        <span className="flex items-center justify-center w-full px-2">
+                          <span className="w-full max-w-[56px] h-0.5 rounded-full bg-gradient-to-r from-[#2d4cc8] via-[#6d28d9] to-[#10b981]" />
                         </span>
                       ) : (
-                        key.label
+                        <span className="truncate">{key.label}</span>
                       )}
                     </button>
                   );
@@ -717,25 +717,25 @@ export default function NeumorphicDeskMonitor({
           type="button"
           onClick={handleMouseClick}
           title="Click mouse to scroll through website sections"
-          className={`neu-card w-14 sm:w-16 h-[106px] sm:h-[116px] rounded-[28px] p-2 flex flex-col items-center justify-between cursor-pointer transition shrink-0 ${
+          className={`neu-card w-11 sm:w-16 h-[96px] sm:h-[116px] rounded-[24px] sm:rounded-[28px] p-1.5 sm:p-2 flex flex-col items-center justify-between cursor-pointer transition shrink-0 ${
             mouseClicked ? "scale-[0.97]" : "hover:-translate-y-0.5"
           }`}
         >
-          <div className="w-full h-11 border-b border-[#d1d9e6] flex items-center justify-center relative pb-1">
+          <div className="w-full h-9 sm:h-11 border-b border-[#d1d9e6] flex items-center justify-center relative pb-1">
             <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-[1px] bg-[#d1d9e6]" />
             {/* Scroll Wheel animates subtly while monitor scrolls */}
-            <div className="neu-inset w-3 h-6 rounded-full relative z-10 flex items-center justify-center overflow-hidden">
+            <div className="neu-inset w-2.5 sm:w-3 h-5 sm:h-6 rounded-full relative z-10 flex items-center justify-center overflow-hidden">
               <span
-                className={`w-1.5 h-2 rounded-full bg-[#2d4cc8] transition-transform duration-300 ${
+                className={`w-1 sm:w-1.5 h-1.5 sm:h-2 rounded-full bg-[#2d4cc8] transition-transform duration-300 ${
                   !isPaused && !isHoveringScreen ? "animate-bounce" : ""
                 }`}
               ></span>
             </div>
           </div>
 
-          <div className="flex flex-col items-center gap-1 pb-1">
-            <span className="w-2 h-2 rounded-full bg-gradient-to-br from-[#2d4cc8] to-[#10b981] opacity-80"></span>
-            <span className="text-[6px] font-black tracking-widest text-[#66799e] uppercase">DPI</span>
+          <div className="flex flex-col items-center gap-0.5 sm:gap-1 pb-0.5 sm:pb-1">
+            <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-gradient-to-br from-[#2d4cc8] to-[#10b981] opacity-80"></span>
+            <span className="text-[5.5px] sm:text-[6px] font-black tracking-widest text-[#66799e] uppercase">DPI</span>
           </div>
         </button>
 

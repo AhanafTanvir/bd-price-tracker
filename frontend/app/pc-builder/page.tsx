@@ -285,9 +285,9 @@ export default function AiPcBuilderPage() {
   const budgetDelta = buildResult ? budget - buildResult.totalPrice : 0;
 
   return (
-    <main className="min-h-screen bg-[#e6e7ee] text-[#31344b] pb-20">
+    <main className="min-h-screen text-[#31344b] pb-20">
       {/* Top Breadcrumb & Status Bar */}
-      <div className="border-b border-[#d1d9e6] bg-[#e6e7ee]">
+      <div className="border-b border-[#d1d9e6]/70">
         <div className="max-w-[1400px] mx-auto px-4 md:px-8 py-3 flex flex-wrap items-center justify-between text-xs text-[#66799e] gap-2 font-bold">
           <div className="flex items-center gap-2">
             <Link href="/" className="hover:text-[#2d4cc8] transition">
@@ -304,7 +304,7 @@ export default function AiPcBuilderPage() {
       </div>
 
       {/* Hero Header */}
-      <div className="bg-[#e6e7ee] border-b border-[#d1d9e6] pt-10 pb-14">
+      <div className="border-b border-[#d1d9e6]/70 pt-10 pb-14">
         <div className="max-w-[1400px] mx-auto px-4 md:px-8">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>
@@ -371,8 +371,8 @@ export default function AiPcBuilderPage() {
               </div>
 
               {/* Recessed Budget Input Well + Range Slider (Screenshot 4 pattern!) */}
-              <div className="neu-inset rounded-2xl p-2 flex items-center relative">
-                <span className="pl-4 text-2xl font-black text-[#2d4cc8]">
+              <div className="neu-inset rounded-2xl p-1.5 sm:p-2 flex items-center relative gap-2">
+                <span className="pl-2.5 sm:pl-4 text-xl sm:text-2xl font-black text-[#2d4cc8] shrink-0">
                   ৳
                 </span>
                 <input
@@ -380,9 +380,9 @@ export default function AiPcBuilderPage() {
                   value={budgetInput}
                   onChange={(e) => handleBudgetChange(e.target.value)}
                   placeholder="e.g. 75,000"
-                  className="w-full bg-transparent py-3 px-4 text-2xl md:text-3xl font-black text-[#31344b] outline-none placeholder-[#93a0b8]"
+                  className="w-full min-w-0 bg-transparent py-2.5 sm:py-3 px-1 sm:px-3 text-xl sm:text-2xl md:text-3xl font-black text-[#31344b] outline-none placeholder-[#93a0b8]"
                 />
-                <span className="neu-pill text-xs font-black text-[#6d28d9] uppercase tracking-wider px-3.5 py-1.5 rounded-xl mr-2 shrink-0">
+                <span className="neu-pill text-[10px] sm:text-xs font-black text-[#6d28d9] uppercase tracking-wider px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-xl mr-1 sm:mr-2 shrink-0">
                   BDT TAKA
                 </span>
               </div>
@@ -629,7 +629,7 @@ export default function AiPcBuilderPage() {
                 </div>
 
                 {/* Double-Bevel Total Build Cost Box (Screenshot 8 pattern!) */}
-                <div className="neu-inset p-2 rounded-2xl min-w-[270px]">
+                <div className="neu-inset p-2 rounded-2xl w-full lg:w-auto lg:min-w-[270px]">
                   <div className="neu-card-sm rounded-xl p-4">
                     <div className="border border-[#d1d9e6] rounded-xl overflow-hidden divide-y divide-[#d1d9e6] text-xs">
                       <div className="flex justify-between items-center px-3.5 py-2 text-[#44476a] font-bold">
@@ -866,9 +866,9 @@ export default function AiPcBuilderPage() {
                   {componentList.map((comp) => {
                     if (!comp.item) return null;
                     return (
-                      <div key={comp.key} className="flex items-center justify-between px-4 py-3">
-                        <div className="flex items-center gap-3 min-w-0 pr-4">
-                          <span className={`font-black shrink-0 ${comp.badgeColor}`}>{comp.category}:</span>
+                      <div key={comp.key} className="flex items-center justify-between px-3 sm:px-4 py-3 gap-2">
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-0.5 sm:gap-3 min-w-0 pr-2">
+                          <span className={`font-black shrink-0 text-[11px] sm:text-xs ${comp.badgeColor}`}>{comp.category}</span>
                           <span className="font-bold text-[#31344b] truncate">{comp.item.name}</span>
                         </div>
                         <span className="font-black text-[#31344b] shrink-0">
@@ -877,13 +877,13 @@ export default function AiPcBuilderPage() {
                       </div>
                     );
                   })}
-                  <div className="flex items-center justify-between px-4 py-3 text-[#44476a] font-bold">
+                  <div className="flex items-center justify-between px-3 sm:px-4 py-3 text-[#44476a] font-bold gap-2">
                     <span>Configured Engine</span>
-                    <span className="text-[#6d28d9]">{buildResult.engine}</span>
+                    <span className="text-[#6d28d9] text-right truncate">{buildResult.engine}</span>
                   </div>
-                  <div className="flex items-center justify-between px-4 py-4 font-black text-base text-[#31344b]">
+                  <div className="flex items-center justify-between px-3 sm:px-4 py-4 font-black text-sm sm:text-base text-[#31344b] gap-2">
                     <span>Total Rig Cost</span>
-                    <span className="text-[#18634b] text-xl">৳{buildResult.totalPrice.toLocaleString()} BDT</span>
+                    <span className="text-[#18634b] text-lg sm:text-xl">৳{buildResult.totalPrice.toLocaleString()} BDT</span>
                   </div>
                 </div>
 

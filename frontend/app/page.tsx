@@ -71,7 +71,7 @@ function TypingHeadline() {
   return (
     <h1
       aria-label="PC Build থেকে Laptop সব এক জায়গায়"
-      className="text-3xl sm:text-5xl xl:text-[54px] font-black tracking-tight leading-[1.18] text-[#31344b] min-h-[84px] sm:min-h-[120px] xl:min-h-[132px]"
+      className="text-[28px] sm:text-5xl xl:text-[54px] font-black tracking-tight leading-[1.2] text-[#31344b] min-h-[76px] sm:min-h-[120px] xl:min-h-[132px]"
     >
       {visibleTokens.map((t, idx) => (
         <span key={idx} className={t.colorClass}>
@@ -552,45 +552,45 @@ export default function HomePage() {
   );
 
   return (
-    <div className="min-h-screen bg-[#e6e7ee] text-[#31344b]">
+    <div className="min-h-screen text-[#31344b]">
 
       {/* =========================================================================
           HERO SECTION: SYNCHRONIZED WHITE/NEUMORPHISM KINETIC SHOWCASE BANNER
          ========================================================================= */}
       <section
-        className="bg-[#e6e7ee] border-b border-[#d1d9e6] py-10 md:py-14 px-4 md:px-8 overflow-hidden"
+        className="border-b border-[#d1d9e6]/70 py-6 sm:py-10 md:py-14 px-3.5 sm:px-4 md:px-8 overflow-hidden"
       >
-        <div className="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+        <div className="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-7 lg:gap-10 items-center">
 
           {/* LEFT COLUMN: Synchronized Pop-Up Typography + Neumorphic Search */}
-          <div className="lg:col-span-7 space-y-6">
+          <div className="lg:col-span-7 space-y-5 sm:space-y-6 min-w-0">
 
-            <div className="neu-pill inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-extrabold text-[#18634b]">
-              <span className="w-2 h-2 rounded-full bg-[#10b981] animate-pulse"></span>
-              <span>Over 14,000 Hardware Listings • Tracked Live Across Bangladesh</span>
+            <div className="neu-pill inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full text-[10px] sm:text-xs font-extrabold text-[#18634b] max-w-full">
+              <span className="w-2 h-2 rounded-full bg-[#10b981] animate-pulse shrink-0"></span>
+              <span className="truncate">14,000+ Hardware Listings • Live BD Prices</span>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-2.5 sm:space-y-3">
               <TypingHeadline />
 
               {/* Synchronized Kinetic Pop-Up Headline (Ordered with right-side slide!) */}
-              <div className="min-h-[76px] sm:min-h-[68px] flex items-center">
+              <div className="min-h-[104px] sm:min-h-[76px] flex items-center">
                 <div
                   key={`hero-text-${heroSlide}`}
                   className="animate-neu-pop w-full"
                 >
-                  <div className="flex flex-wrap items-center gap-2.5">
-                    <span className="text-lg sm:text-2xl font-extrabold text-[#44476a]">
+                  <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
+                    <span className="text-base sm:text-2xl font-extrabold text-[#44476a]">
                       Best BD Deals on
                     </span>
-                    <span className={`neu-card-sm px-4 py-1 rounded-2xl text-lg sm:text-2xl font-black ${activeShowcase.accentText} border-l-4 ${activeShowcase.accentBorder}`}>
+                    <span className={`neu-card-sm px-3 sm:px-4 py-1 rounded-2xl text-base sm:text-2xl font-black ${activeShowcase.accentText} border-l-4 ${activeShowcase.accentBorder}`}>
                       {activeShowcase.category}
                     </span>
-                    <span className="neu-pill-inset px-3 py-1 rounded-full text-xs font-black text-[#18634b]">
+                    <span className="neu-pill-inset px-2.5 sm:px-3 py-1 rounded-full text-[11px] sm:text-xs font-black text-[#18634b]">
                       From {activeShowcase.price}
                     </span>
                   </div>
-                  <p className="text-xs sm:text-sm text-[#44476a] font-semibold mt-2">
+                  <p className="text-xs sm:text-sm text-[#44476a] font-semibold mt-2 leading-relaxed">
                     {activeShowcase.subtitle} — comparing{" "}
                     <strong className="text-[#a91e2c]">Star Tech</strong>,{" "}
                     <strong className="text-[#b45309]">Ryans Computers</strong> &{" "}
@@ -604,10 +604,10 @@ export default function HomePage() {
             <div className="relative max-w-3xl w-full">
               <form
                 onSubmit={handleSearch}
-                className="neu-card rounded-2xl p-2 flex items-center gap-2"
+                className="neu-card rounded-2xl p-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-2"
               >
-                <div className="neu-inset flex-1 flex items-center rounded-xl px-3.5 py-1">
-                  <svg className="w-5 h-5 text-[#2d4cc8] mr-2.5 shrink-0" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                <div className="neu-inset flex-1 flex items-center rounded-xl px-3 sm:px-3.5 py-1 min-w-0">
+                  <svg className="w-4 h-4 sm:w-5 sm:h-5 text-[#2d4cc8] mr-2 sm:mr-2.5 shrink-0" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1010.5 18a7.5 7.5 0 006.15-3.35z" />
                   </svg>
                   <input
@@ -618,22 +618,22 @@ export default function HomePage() {
                       setShowInstantMatches(e.target.value.length > 1);
                     }}
                     onFocus={() => setShowInstantMatches(searchQuery.length > 1)}
-                    placeholder="Search RTX 4060, Ryzen 5 7600X, DDR5 RAM, Monitors..."
-                    className="w-full py-2.5 bg-transparent outline-none text-[#31344b] font-bold text-sm md:text-base placeholder-[#66799e]"
+                    placeholder="Search RTX 4060, Ryzen 5 7600X, RAM..."
+                    className="w-full py-2 sm:py-2.5 bg-transparent outline-none text-[#31344b] font-bold text-xs sm:text-sm md:text-base placeholder-[#66799e] min-w-0"
                   />
                 </div>
 
                 <button
                   type="button"
                   onClick={() => router.push("/search?q=Graphics%20Cards")}
-                  className="neu-btn hidden sm:flex items-center gap-1.5 text-xs font-extrabold text-[#44476a] hover:text-[#2d4cc8] px-3.5 py-3 rounded-xl cursor-pointer"
+                  className="neu-btn hidden sm:flex items-center gap-1.5 text-xs font-extrabold text-[#44476a] hover:text-[#2d4cc8] px-3.5 py-3 rounded-xl cursor-pointer shrink-0"
                 >
                   <span>⚙️</span> Filters
                 </button>
 
                 <button
                   type="submit"
-                  className="neu-btn-primary px-5 md:px-7 py-3 rounded-xl font-extrabold text-sm md:text-base flex items-center gap-1.5 cursor-pointer shrink-0"
+                  className="neu-btn-primary px-5 md:px-7 py-2.5 sm:py-3 rounded-xl font-extrabold text-xs sm:text-sm md:text-base flex items-center justify-center gap-1.5 cursor-pointer shrink-0"
                 >
                   <span>Compare Prices</span>
                   <span>→</span>
@@ -751,7 +751,7 @@ export default function HomePage() {
       {/* =========================================================================
           VERIFIED RETAILER SYNCHRONIZATION STATUS BAR
          ========================================================================= */}
-      <section className="bg-[#e6e7ee] border-b border-[#d1d9e6] py-8 px-4 md:px-8">
+      <section className="border-b border-[#d1d9e6]/70 py-8 px-4 md:px-8">
         <div className="max-w-[1600px] mx-auto">
           <div className="flex flex-col sm:flex-row items-center justify-between mb-5 text-xs">
             <div className="flex items-center gap-2 font-extrabold text-[#31344b] mb-2 sm:mb-0">
@@ -904,7 +904,7 @@ export default function HomePage() {
       {/* =========================================================================
           ALGORITHMIC BEST DEALS OF THE DAY (Screenshot 2 Card Pattern + Colors)
          ========================================================================= */}
-      <section className="bg-[#e6e7ee] border-y border-[#d1d9e6] py-16 px-4 md:px-8">
+      <section className="border-y border-[#d1d9e6]/70 py-16 px-4 md:px-8">
         <div className="max-w-[1600px] mx-auto">
 
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-9 gap-4">
@@ -921,13 +921,13 @@ export default function HomePage() {
               </p>
             </div>
 
-            {/* Recessed Neumorphic Filter Pill Tray */}
-            <div className="neu-inset flex flex-wrap items-center gap-1.5 p-1.5 rounded-2xl">
+            {/* Recessed Neumorphic Filter Pill Tray (Horizontal Scroll on Mobile) */}
+            <div className="neu-inset flex items-center gap-1.5 p-1.5 rounded-2xl overflow-x-auto whitespace-nowrap scrollbar-none sm:flex-wrap max-w-full w-full md:w-auto">
               {["All Deals", "GPUs", "CPUs", "Motherboards", "RAM", "Storage", "Laptops", "Monitors", "Power & Cases"].map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveDealFilter(tab)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-extrabold transition cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-xl text-xs font-extrabold transition cursor-pointer shrink-0 ${
                     activeDealFilter === tab
                       ? "neu-btn-primary"
                       : "text-[#44476a] hover:text-[#2d4cc8]"
@@ -1230,7 +1230,7 @@ export default function HomePage() {
       {/* =========================================================================
           CERTIFIED TECH RETAILERS WE TRACK
          ========================================================================= */}
-      <section className="bg-[#e6e7ee] border-y border-[#d1d9e6] py-16 px-4 md:px-8">
+      <section className="border-y border-[#d1d9e6]/70 py-16 px-4 md:px-8">
         <div className="max-w-[1600px] mx-auto">
           <div className="text-center max-w-2xl mx-auto mb-10">
             <span className="neu-pill inline-block text-[11px] font-extrabold text-[#18634b] uppercase tracking-wider px-3.5 py-1 rounded-full">

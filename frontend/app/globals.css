@@ -305,3 +305,131 @@ input[type="range"].neu-range::-moz-range-thumb {
   animation: caretBlink 0.9s step-end infinite;
 }
 
+/* Soft Calm Background Bubble Drift (Ultra-Slow Non-Irritating Motion) */
+@keyframes bubbleFloat1 {
+  0% {
+    transform: translate3d(0px, 0px, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(42px, 30px, 0) scale(1.06);
+  }
+  100% {
+    transform: translate3d(-24px, 48px, 0) scale(0.97);
+  }
+}
+
+@keyframes bubbleFloat2 {
+  0% {
+    transform: translate3d(0px, 0px, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(-46px, 36px, 0) scale(1.05);
+  }
+  100% {
+    transform: translate3d(20px, -28px, 0) scale(0.96);
+  }
+}
+
+@keyframes bubbleFloat3 {
+  0% {
+    transform: translate3d(0px, 0px, 0) scale(0.98);
+  }
+  50% {
+    transform: translate3d(34px, -38px, 0) scale(1.05);
+  }
+  100% {
+    transform: translate3d(-30px, 24px, 0) scale(1);
+  }
+}
+
+@keyframes bubbleFloat4 {
+  0% {
+    transform: translate3d(0px, 0px, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(38px, -32px, 0) scale(1.07);
+  }
+  100% {
+    transform: translate3d(-18px, -50px, 0) scale(0.98);
+  }
+}
+
+.animate-bubble-1 {
+  animation: bubbleFloat1 26s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+.animate-bubble-2 {
+  animation: bubbleFloat2 32s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+.animate-bubble-3 {
+  animation: bubbleFloat3 30s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+.animate-bubble-4 {
+  animation: bubbleFloat4 35s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-bubble-1,
+  .animate-bubble-2,
+  .animate-bubble-3,
+  .animate-bubble-4 {
+    animation: none;
+  }
+}
+
+/* Electric Robo-Cat Assistant Animations */
+@keyframes roboBlink {
+  0%,
+  92%,
+  100% {
+    transform: scaleY(1);
+  }
+  96% {
+    transform: scaleY(0.1);
+  }
+}
+
+@keyframes roboTailWag {
+  0%,
+  100% {
+    transform: rotate(-6deg);
+  }
+  50% {
+    transform: rotate(10deg);
+  }
+}
+
+@keyframes electricPulse {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(0.97);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+}
+
+.animate-robo-blink {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: roboBlink 4.2s ease-in-out infinite;
+}
+
+.animate-robo-tail {
+  transform-box: fill-box;
+  transform-origin: bottom left;
+  animation: roboTailWag 2.6s ease-in-out infinite;
+}
+
+.animate-electric-pulse {
+  animation: electricPulse 2s ease-in-out infinite;
+}
+

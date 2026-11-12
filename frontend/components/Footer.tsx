@@ -4,11 +4,11 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="bg-[#e6e7ee] border-t border-[#d1d9e6] mt-20 pt-16 pb-12 text-[#44476a]">
+    <footer className="bg-[#e6e7ee]/80 backdrop-blur-sm border-t border-[#d1d9e6] mt-12 md:mt-20 pt-10 md:pt-16 pb-20 sm:pb-12 text-[#44476a]">
       <div className="max-w-[1600px] mx-auto px-4 md:px-8">
         
         {/* 4 Columns Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10 pb-12 border-b border-[#d1d9e6]">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10 pb-10 md:pb-12 border-b border-[#d1d9e6]">
           
           {/* Col 1: Brand & Integrity */}
           <div className="space-y-4">
@@ -144,8 +144,8 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-6 flex flex-col md:flex-row justify-between items-center text-[11px] text-[#66799e] gap-4">
-          <div className="flex flex-wrap gap-4 font-semibold">
+        <div className="pt-6 flex flex-col md:flex-row justify-between items-center text-center md:text-left text-[11px] text-[#66799e] gap-4">
+          <div className="flex flex-wrap justify-center md:justify-start gap-3 sm:gap-4 font-semibold">
             <span className="hover:text-[#2d4cc8] cursor-pointer transition">Privacy Policy</span>
             <span>•</span>
             <span className="hover:text-[#2d4cc8] cursor-pointer transition">Terms of Service</span>

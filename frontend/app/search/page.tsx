@@ -101,6 +101,7 @@ function SearchEngine() {
   const [sortBy, setSortBy] = useState<"lowest" | "highest" | "score">("lowest");
   const [viewMode, setViewMode] = useState<"matrix" | "grid">("matrix");
   const [budgetTarget, setBudgetTarget] = useState("35,000");
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
 
   useEffect(() => {
     const fetchDeals = async () => {
@@ -209,10 +210,10 @@ function SearchEngine() {
   };
 
   return (
-    <div className="min-h-screen bg-[#e6e7ee] text-[#31344b] pb-16">
+    <div className="min-h-screen text-[#31344b] pb-16">
       
       {/* 1. Breadcrumb & Catalog Sync Header */}
-      <section className="bg-[#e6e7ee] border-b border-[#d1d9e6] py-5 px-4 md:px-8">
+      <section className="border-b border-[#d1d9e6]/70 py-5 px-4 md:px-8">
         <div className="max-w-[1600px] mx-auto">
           
           <div className="flex items-center gap-2 text-xs text-[#66799e] font-bold mb-3">
@@ -290,12 +291,29 @@ function SearchEngine() {
       </section>
 
       {/* 2. Main Workspace: Neumorphic Sidebar + Content Area */}
-      <main className="max-w-[1600px] mx-auto px-4 md:px-8 py-8 flex flex-col lg:flex-row gap-7">
+      <main className="max-w-[1600px] mx-auto px-3.5 sm:px-4 md:px-8 py-6 sm:py-8 flex flex-col lg:flex-row gap-5 lg:gap-7">
         
+        {/* Mobile Filter Toggle Button (< lg) */}
+        <div className="lg:hidden">
+          <button
+            type="button"
+            onClick={() => setShowMobileFilters((prev) => !prev)}
+            className="neu-btn w-full py-2.5 px-4 rounded-xl flex items-center justify-between text-xs font-black text-[#2d4cc8] cursor-pointer"
+          >
+            <span className="flex items-center gap-2">
+              <span>⚙️</span>
+              <span>{showMobileFilters ? "Hide Filters & Price Range" : "Show Filters & Price Range"}</span>
+            </span>
+            <span className="neu-pill-inset px-2 py-0.5 rounded-full text-[10px] text-[#31344b]">
+              {selectedStores.length} Stores
+            </span>
+          </button>
+        </div>
+
         {/* =========================================================================
             LEFT SIDEBAR: NEUMORPHIC FILTERS (Screenshots 4, 5, 6)
            ========================================================================= */}
-        <aside className="w-full lg:w-76 flex-shrink-0 space-y-6">
+        <aside className={`${showMobileFilters ? "block" : "hidden"} lg:block w-full lg:w-76 flex-shrink-0 space-y-6`}>
           
           {/* Card 1: Price Range Card (EXACTLY Screenshot 4!) */}
           <div className="neu-card rounded-2xl p-5 space-y-4">
@@ -535,28 +553,28 @@ function SearchEngine() {
         {/* =========================================================================
             RIGHT MAIN AREA: SORTING + HORIZONTAL & GRID NEUMORPHIC CARDS
            ========================================================================= */}
-        <div className="flex-1 space-y-6">
+        <div className="flex-1 space-y-6 min-w-0">
           
           {/* Top Sort & View Toggle Bar */}
-          <div className="neu-card rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
+          <div className="neu-card rounded-2xl p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
               <p className="text-xs font-bold text-[#44476a]">
                 Showing <strong className="text-[#2d4cc8] font-black">{filteredDeals.length}</strong> of {deals.length} variants
               </p>
-              <span className="text-[#b8b9be]">•</span>
+              <span className="text-[#b8b9be] hidden sm:inline">•</span>
               <span className="text-[11px] font-black text-[#18634b] flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-[#10b981] animate-pulse"></span>
                 LIVE PRICE GUARANTEED
               </span>
             </div>
 
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2 text-xs">
-                <span className="text-[#66799e] font-bold">Sort:</span>
+            <div className="flex items-center gap-3 w-full sm:w-auto">
+              <div className="flex items-center gap-2 text-xs flex-1 sm:flex-initial">
+                <span className="text-[#66799e] font-bold shrink-0">Sort:</span>
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value as "lowest" | "highest" | "score")}
-                  className="neu-inset text-[#31344b] text-xs px-3 py-2 rounded-xl font-extrabold outline-none cursor-pointer"
+                  className="neu-inset text-[#31344b] text-xs px-3 py-2 rounded-xl font-extrabold outline-none cursor-pointer w-full sm:w-auto min-w-0"
                 >
                   <option value="lowest">Lowest Price First (Default)</option>
                   <option value="highest">Highest Price First</option>
@@ -1072,8 +1090,8 @@ function SearchEngine() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2.5 w-full md:w-auto">
-                <div className="neu-inset flex items-center rounded-xl px-3.5 py-2.5 w-full md:w-36">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full md:w-auto">
+                <div className="neu-inset flex items-center rounded-xl px-3.5 py-2.5 w-full sm:w-36">
                   <span className="text-[#2d4cc8] font-black text-xs mr-1.5">৳</span>
                   <input
                     type="text"
@@ -1094,12 +1112,12 @@ function SearchEngine() {
           </div>
 
           {/* PAGINATION */}
-          <div className="flex flex-col sm:flex-row justify-between items-center text-xs text-[#44476a] font-semibold gap-4 pt-4 border-t border-[#d1d9e6]">
+          <div className="flex flex-col sm:flex-row justify-between items-center text-xs text-[#44476a] font-semibold gap-4 pt-4 border-t border-[#d1d9e6] text-center sm:text-left">
             <span>
               Showing Items 1 to {filteredDeals.length} of {deals.length} {urlQuery} configurations
             </span>
 
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap justify-center items-center gap-2">
               <button
                 type="button"
                 className="neu-btn px-3.5 py-1.5 rounded-xl text-[#44476a] font-extrabold cursor-pointer"
